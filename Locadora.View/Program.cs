@@ -5,59 +5,54 @@ using Microsoft.Data.SqlClient;
 using Utils.Databases;
 
 
-//Exemplo das 2 formas de instanciar classes:
-var cliente = new Cliente("Igor", "i@email.com");
+var cliente = new Cliente("José Antonio", "ja@email.com", "11985639514");
 ClienteController clienteController = new();
 
-
-//try
-//{
-//    clienteController.AdicionarCliente(cliente);
-//}
-//catch (Exception ex)
-//{
-//    Console.WriteLine($"Erro inesperado ao adiconar cliente: " + ex.Message);
-//}
+var documento = new Documento("RG", "951753852", new DateOnly(2020,1,1), new DateOnly(2030,1,1));
+DocumentoController documentoController = new();
 
 
 //try
 //{
-//    clienteController.AtualizarTelefoneCliente("77774444", "h@email.com");
+//    clienteController.AdicionarCliente(cliente, documento);
 //}
 //catch (Exception ex)
 //{
-//    Console.WriteLine($"Erro inesperado ao atualizar cliente:" + ex.Message);
+//    Console.WriteLine(ex.Message);
 //}
 
 
 //try
 //{
-//    var listaClientes = clienteController.ListarClientes();
-
-
-//    foreach (var clienteListado in listaClientes)
-//    {
-//        Console.WriteLine(clienteListado);
-//    }
+//    clienteController.AtualizarTelefoneCliente("11996328569", "c@email.com");
 //}
 //catch (Exception ex)
 //{
-//    Console.WriteLine($"Erro inesperado ao listar clientes: " + ex.Message);
+//    Console.WriteLine(ex.Message);
 //}
+
 
 try
 {
-    clienteController.DeletarCliente("h@email.com");
+    var listaClientes = clienteController.ListarClientes();
+
+
+    foreach (var clienteListado in listaClientes)
+    {
+        Console.WriteLine(clienteListado);
+    }
 }
 catch (Exception ex)
 {
-    Console.WriteLine($"Erro inesperado ao deletar cliente: " + ex.Message);
+    Console.WriteLine(ex.Message);
 }
 
 
-
-
-
-
-//Documento documento = new Documento(1, "RG", "123456789", new DateOnly(2020,1,1), new DateOnly(2030,1,1));
-//Console.WriteLine(documento.ToString());  
+//try
+//{
+//    clienteController.DeletarCliente("f@email.com");
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine(ex.Message);
+//}

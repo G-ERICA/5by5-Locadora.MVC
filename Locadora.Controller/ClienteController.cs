@@ -7,10 +7,12 @@ namespace Locadora.Controller
 {
     public class ClienteController
     {
-        public void AdicionarCliente(Cliente cliente)
+
+        public void AdicionarCliente(Cliente cliente, Documento documento)
         {
             var connection = new SqlConnection(ConnectionDB.GetConnectionString());
             connection.Open();
+
             using (SqlTransaction transaction = connection.BeginTransaction())
             {
                 try
@@ -21,7 +23,12 @@ namespace Locadora.Controller
                     command.Parameters.AddWithValue("@Telefone", cliente.Telefone ?? (object)DBNull.Value);
 
                     int clientId = Convert.ToInt32(command.ExecuteScalar());
+                    documento.SetClienteId(clientId);
+
+                    var documentoController = new DocumentoController();
+                   
                     cliente.setClienteId(clientId);
+                    documentoController.AdicionarDocumento(documento, connection, transaction);
 
                     transaction.Commit();
                 }
@@ -61,7 +68,16 @@ namespace Locadora.Controller
                                                     reader["Telefone"].ToString() : null
 
                                     );
-                        cliente.setClienteId(Convert.ToInt32(reader["ClienteID"]));
+                        //cliente.setClienteId(Convert.ToInt32(reader["ClienteID"]));
+
+                        var documento = new Documento(
+                            reader["TipoDocumento"].ToString(),
+                            reader["Numero"].ToString(),
+                            DateOnly.FromDateTime(reader.GetDateTime(5)),
+                            DateOnly.FromDateTime(reader.GetDateTime(6))
+                        );
+
+                        cliente.setDocumento(documento);
 
                         listaClientes.Add(cliente);
                     }
@@ -131,7 +147,7 @@ namespace Locadora.Controller
             {
                 var clienteEncontrado = this.BuscaClientePorEmail(email);
                 if (clienteEncontrado is null)
-                    throw new Exception();
+                    throw new Exception("Não existe cliente cadastrado com este email");
                 clienteEncontrado.setTelefone(telefone);
 
                 try
@@ -164,7 +180,7 @@ namespace Locadora.Controller
 
             var clienteEncontrado = this.BuscaClientePorEmail(email);
             if (clienteEncontrado is null)
-                throw new Exception();
+                throw new Exception("Não existe cliente cadastrado com este email");
 
             var connection = new SqlConnection(ConnectionDB.GetConnectionString());
             connection.Open();

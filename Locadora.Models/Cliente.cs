@@ -16,8 +16,12 @@
                                                             SET Telefone = @Telefone
                                                             WHERE ClienteID = @IDCliente";
 
-        public static readonly string SELECTCLIENTEPOREMAIL = @"SELECT * FROM tblClientes
-                                                                WHERE Email = @Email";
+        public static readonly string SELECTCLIENTEPOREMAIL = @"SELECT c.ClienteID, c.Nome, c.Email, c.Telefone,
+                                                            d.TipoDocumento, d.Numero, d.DataEmissao, d.DataValidade
+                                                            FROM tblClientes c
+                                                            JOIN tblDocumentos d
+                                                            ON c.ClienteID = d.ClienteID
+                                                            WHERE Email = @Email";
 
         public static readonly string DELETECLIENTE = @"DELETE FROM tblClientes
                                                        WHERE ClienteID = @IDCliente";

@@ -8,7 +8,19 @@ namespace Locadora.Models
 {
     public class Documento
     {
-        public static readonly string INSERTDOCUMENTO = "INSERT INTO tblDocumentos (ClienteId, TipoDocumento, Numero, DataEmissao, DataValidade) VALUES(@ClienteId, @TipoDocumento, @Numero, @DataEmissao, @DataValidade) ";
+        public static readonly string INSERTDOCUMENTO = @"INSERT INTO tblDocumentos (ClienteId, TipoDocumento, Numero, DataEmissao, DataValidade) 
+                                                        VALUES(@ClienteId, @TipoDocumento, @Numero, @DataEmissao, @DataValidade) ";
+
+        public static readonly string UPDATEDOCUMENTO = @"UPDATE tblDocumentos
+                                                        SET TipoDocumento = @TipoDocumento,
+                                                        Numero = @Numero,
+                                                        DataEmissao = @DataEmissao,
+                                                        DataValidade = @DataValidade
+                                                        WHERE ClienteID = @IdCliente";
+        
+        public static readonly string SELECTDOCUMENTO = @"SELECT * FROM tblDocumentos
+                                                        WHERE DocumentoId = @DocumentoId";
+
         public int DocumentoId { get; private set; }
         public int ClienteId { get; private set; }
         public string TipoDocumento { get; private set; }

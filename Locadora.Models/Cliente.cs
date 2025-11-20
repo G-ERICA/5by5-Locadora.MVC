@@ -6,6 +6,7 @@
         public static readonly string SELECTALLCLIENTES = "SELECT * FROM tblClientes";
         public static readonly string UPDATEFONECLIENTE = "UPDATE tblClientes SET Telefone = @Telefone WHERE ClienteID = @IDCliente";
         public static readonly string SELECTCLIENTEPOREMAIL = "SELECT * FROM tblClientes WHERE Email = @Email";
+        public static readonly string DELETECLIENTE = "DELETE FROM tblClientes WHERE ClienteID = @IDCliente";
 
         public int ClienteId { get; private set; }
         public string Nome { get; private set; }

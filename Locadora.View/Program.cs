@@ -5,41 +5,55 @@ using Microsoft.Data.SqlClient;
 using Utils.Databases;
 
 
-//TODO: Refatorar código, criar padronização
-
-
-//2 formas de instanciar classes:
+//Exemplo das 2 formas de instanciar classes:
 var cliente = new Cliente("Igor", "i@email.com");
 ClienteController clienteController = new();
 
 
+//try
+//{
+//    clienteController.AdicionarCliente(cliente);
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine($"Erro inesperado ao adiconar cliente: " + ex.Message);
+//}
+
+
+//try
+//{
+//    clienteController.AtualizarTelefoneCliente("77774444", "h@email.com");
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine($"Erro inesperado ao atualizar cliente:" + ex.Message);
+//}
+
+
+//try
+//{
+//    var listaClientes = clienteController.ListarClientes();
+
+
+//    foreach (var clienteListado in listaClientes)
+//    {
+//        Console.WriteLine(clienteListado);
+//    }
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine($"Erro inesperado ao listar clientes: " + ex.Message);
+//}
+
 try
 {
-    clienteController.AdicionarCliente(cliente);
+    clienteController.DeletarCliente("h@email.com");
 }
 catch (Exception ex)
 {
-    Console.WriteLine(ex.Message);
+    Console.WriteLine($"Erro inesperado ao deletar cliente: " + ex.Message);
 }
 
-
-clienteController.AtualizarTelefoneCliente("99998888", "f@email.com");
-
-
-try
-{
-    var listaClientes = clienteController.ListarClientes();
-
-
-    foreach (var clienteListado in listaClientes)
-    {
-        Console.WriteLine(clienteListado);
-    }
-}
-catch(Exception ex) 
-{
-    Console.WriteLine(ex.Message);
-}
 
 
 

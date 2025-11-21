@@ -148,21 +148,56 @@ namespace Locadora.Controller
 
                 }
                 catch (SqlException ex) 
-                { 
-                
+                {
+                    transaction.Rollback();
+                    throw new Exception("Erro ao adicionar categora: " + ex);
                 }
                 catch (Exception ex) 
-                { 
-                
+                {
+                    transaction.Rollback();
+                    throw new Exception("Erro ao adicionar categora: " + ex);
                 }
                 finally { connection.Close(); }
             }
 
 
         }
-        public void DeletarCategoria() 
-        { }
+        public void DeletarCategoria(string nome)
+        {
+            Categoria categoriaEncontrada = BuscarCategoriaPorNome(nome) ??
+                throw new Exception("Categora não encontrada.");
 
+            var connection = new SqlConnection(ConnectionDB.GetConnectionString());
+            connection.Open();
+
+            using (SqlTransaction transaction = connection.BeginTransaction())
+            {
+                try
+                {
+                    var command = new SqlCommand(Categoria.DELETECATEGORIA, connection, transaction);
+                    command.Parameters.AddWithValue("@Nome", categoriaEncontrada.Nome);
+
+                    command.ExecuteNonQuery();
+                    transaction.Commit();
+
+                }
+                catch (SqlException ex)
+                {
+                    transaction.Rollback();
+                    throw new Exception("Erro ao adicionar categora: " + ex);
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw new Exception("Erro ao adicionar categora: " + ex);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+            }
+        }
 
     }
 }

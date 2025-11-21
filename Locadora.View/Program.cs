@@ -13,11 +13,12 @@ var documento = new Documento("RG", "951753852", new DateOnly(2020,1,1), new Dat
 #region AdicionarCliente
 //try
 //{
-//clienteController.AdicionarCliente(cliente, documento);
+//  clienteController.AdicionarCliente(cliente, documento);
+//  Console.WriteLine("Cliente adicionado com sucesso");
 //}
 //catch (Exception ex)
 //{
-//Console.WriteLine(ex.Message);
+//  Console.WriteLine(ex.Message);
 //}
 #endregion
 
@@ -25,7 +26,7 @@ var documento = new Documento("RG", "951753852", new DateOnly(2020,1,1), new Dat
 //try
 //{
 //    clienteController.AtualizarTelefoneCliente("11996328569", "c@email.com");
-//}
+//    Console.WriteLine("Telefone atualizado com sucesso");
 //catch (Exception ex)
 //{
 //    Console.WriteLine(ex.Message);
@@ -53,7 +54,7 @@ var documento = new Documento("RG", "951753852", new DateOnly(2020,1,1), new Dat
 //try
 //{
 //    clienteController.DeletarCliente("f@email.com");
-//      Console.WriteLine("Cliente deletado com sucesso");
+//    Console.WriteLine("Cliente deletado com sucesso");
 //}
 //catch (Exception ex)
 //{
@@ -67,7 +68,7 @@ var documento = new Documento("RG", "951753852", new DateOnly(2020,1,1), new Dat
 //try
 //{
 //    clienteController.AtualizarDocumentoCliente("ja@email.com", documento);
-//      Console.WriteLine("Documento atualizado com sucesso");
+//    Console.WriteLine("Documento atualizado com sucesso");
 //}
 //catch (Exception ex)
 //{
@@ -76,8 +77,6 @@ var documento = new Documento("RG", "951753852", new DateOnly(2020,1,1), new Dat
 
 #endregion
 #endregion
-
-
 
 #region CategoriasEVeiculos
 var categoriaController = new CategoriaController();
@@ -88,6 +87,7 @@ var categoriaController = new CategoriaController();
 //try
 //{
 //    categoriaController.AdicionarCategoria(categoria);
+//    Console.WriteLine("Categoria adicionada com sucesso");
 //}
 //catch (Exception ex)
 //{
@@ -115,6 +115,7 @@ var categoriaController = new CategoriaController();
 //try
 //{
 //    categoriaController.AtualizarCategoria("Sportcar", categoria);
+//    Console.WriteLine("Categoria atualizada com sucesso");
 //}
 //catch (Exception ex)
 //{
@@ -123,7 +124,15 @@ var categoriaController = new CategoriaController();
 #endregion
 
 #region Delete Categoria
-
+//try
+//{
+//    categoriaController.DeletarCategoria("Sportcar");
+//    Console.WriteLine("Categoria excluida com sucesso");
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine(ex.Message);
+//}
 #endregion
 
 #endregion

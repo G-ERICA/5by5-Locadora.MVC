@@ -23,6 +23,9 @@ namespace Locadora.Models
                                                                 FROM tblCategorias
                                                                 WHERE Nome = @Nome";
 
+        public static readonly string DELETECATEGORIA = @"DELETE FROM tblCategorias
+                                                          WHERE Nome = @Nome";
+
         public int CategoriaID { get; private set; }
         public string Nome { get; private set; }
         public string Descricao { get; private set; }

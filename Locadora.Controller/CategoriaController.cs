@@ -1,4 +1,5 @@
-﻿using Locadora.Models;
+﻿using Locadora.Controller.Interfaces;
+using Locadora.Models;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,8 @@ using Utils.Databases;
 
 namespace Locadora.Controller
 {
-    public class CategoriaController
+    public class CategoriaController : ICategoriaController
     {
-        
         public void AdicionarCategoria(Categoria categoria) 
         {
             var connection = new SqlConnection(ConnectionDB.GetConnectionString());
@@ -64,8 +64,8 @@ namespace Locadora.Controller
                 {
                     var categoria = new Categoria(
                     reader["Nome"].ToString(),
-                    reader["Descricao"].ToString(),
-                    Convert.ToDecimal(reader["Diaria"])
+                    Convert.ToDecimal(reader["Diaria"]),
+                    reader["Descricao"] != DBNull.Value ? reader["Descricao"].ToString() : null
                     );
 
                     categorias.Add(categoria);
@@ -85,6 +85,40 @@ namespace Locadora.Controller
                 connection.Close();
             }
         }
+        public string BuscarCategoriaPorID(int id)
+        {
+            var connection = new SqlConnection(ConnectionDB.GetConnectionString());
+
+            connection.Open();
+
+            try
+            {
+                var command = new SqlCommand(Categoria.SELECTCATEGORIAPORID, connection);
+                command.Parameters.AddWithValue("CategoriaID", id);
+
+                var reader = command.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    string nomeCategoria = reader["Nome"].ToString();
+                    return nomeCategoria;
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception("Erro ao buscar categora por ID: ", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro inesperado ao buscar categora por ID: ", ex);
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            return null;
+        }
         public Categoria BuscarCategoriaPorNome(string nome) 
         {
             var connection = new SqlConnection(ConnectionDB.GetConnectionString());
@@ -102,10 +136,9 @@ namespace Locadora.Controller
                 {
                     var categoria = new Categoria(
                         reader["Nome"].ToString(),
-                        reader["Descricao"].ToString(),
-                        Convert.ToDecimal(reader["Diaria"])
+                        Convert.ToDecimal(reader["Diaria"]),
+                        reader["Descricao"] != DBNull.Value ? reader["Descricao"].ToString() : null
                     );
-                    //categoria.SetCategoriaID(Convert.ToInt32(reader["CategoriaID"]));
                     return categoria;
                 }
             }
@@ -139,8 +172,8 @@ namespace Locadora.Controller
                 { 
 
                     var command = new SqlCommand(Categoria.UPDATECATEGORIA, connection, transaction);
-                    command.Parameters.AddWithValue("@Nome", nome);
-                    command.Parameters.AddWithValue("@Descricao", categoria.Descricao);
+                    command.Parameters.AddWithValue("@Nome", categoriaEncontrada.Nome);
+                    command.Parameters.AddWithValue("@Descricao", categoria.Descricao is null ? DBNull.Value : categoria.Descricao);
                     command.Parameters.AddWithValue("@Diaria", categoria.Diaria);
 
                     command.ExecuteNonQuery();
@@ -195,9 +228,34 @@ namespace Locadora.Controller
                 {
                     connection.Close();
                 }
-
             }
         }
+        public void AdicionarCategoriaProcedure(Categoria categoria)
+        {
+            var connection = new SqlConnection(ConnectionDB.GetConnectionString());
+            connection.Open();
+            try
+            {
+                var command = new SqlCommand(Categoria.INSERTCATEGORIAPROCEDURE, connection);
+                command.Parameters.AddWithValue("@Nome", categoria.Nome);
+                command.Parameters.AddWithValue("@Descricao", categoria.Descricao);
+                command.Parameters.AddWithValue("@Diaria", categoria.Diaria);
+                command.ExecuteNonQuery();
 
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception("Erro ao adicionar categora: " + ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro inesperado ao adicionar categora: " + ex);
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+        }
     }
 }

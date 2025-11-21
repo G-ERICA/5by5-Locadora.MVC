@@ -1,11 +1,12 @@
 ﻿
 using Locadora.Controller;
 using Locadora.Models;
+using Locadora.Models.Enums;
 using Microsoft.Data.SqlClient;
 using Utils.Databases;
 
 #region ClientesEDocumentos
-var cliente = new Cliente("José Antonio", "ja@email.com", "11985639514");
+var cliente = new Cliente("José Antonio", "jose_ant@email.com", "11985639514");
 ClienteController clienteController = new();
 
 var documento = new Documento("RG", "951753852", new DateOnly(2020,1,1), new DateOnly(2030,1,1));
@@ -13,12 +14,12 @@ var documento = new Documento("RG", "951753852", new DateOnly(2020,1,1), new Dat
 #region AdicionarCliente
 //try
 //{
-//  clienteController.AdicionarCliente(cliente, documento);
-//  Console.WriteLine("Cliente adicionado com sucesso");
+//    clienteController.AdicionarCliente(cliente, documento);
+//    Console.WriteLine("Cliente adicionado com sucesso");
 //}
 //catch (Exception ex)
 //{
-//  Console.WriteLine(ex.Message);
+//    Console.WriteLine(ex.Message);
 //}
 #endregion
 
@@ -74,15 +75,15 @@ var documento = new Documento("RG", "951753852", new DateOnly(2020,1,1), new Dat
 //{
 //    Console.WriteLine(ex.Message);
 //}
-
-#endregion
 #endregion
 
-#region CategoriasEVeiculos
+#endregion
+
+#region Categoria
 var categoriaController = new CategoriaController();
 
 #region AdicionarCategoria
-//var categoria = new Categoria("Sportcar", "Droga, é o Brian", 220.00M);
+//var categoria = new Categoria("Caminhonete", 200.00M, "Picapes - cargas e pessoas");
 
 //try
 //{
@@ -111,7 +112,7 @@ var categoriaController = new CategoriaController();
 #endregion
 
 #region AtualizarCategoria
-//var categoria = new Categoria("Sportcar", "Droga, é o Brian", 220.00M);
+//var categoria = new Categoria("Sportcar", 240.00M, "Carro Esportivo");
 //try
 //{
 //    categoriaController.AtualizarCategoria("Sportcar", categoria);
@@ -135,5 +136,55 @@ var categoriaController = new CategoriaController();
 //}
 #endregion
 
+#region AdicionarComProcedure
+////Exemplo de adição usando Procedure
+
+//var categoria = new Categoria("Moto",50.00M, "CG 125");
+
+//try
+//{
+//    categoriaController.AdicionarCategoriaProcedure(categoria);
+//    Console.WriteLine("Categoria adicionada com sucesso");
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine(ex.Message);
+//}
 #endregion
 
+#endregion
+
+#region Veiculos
+var veiculoController = new VeiculoController();
+
+#region AdicionarVeiculo
+//var veiculo = new Veiculo(4, "XYZ1234", "Ford", "Mustang", 2020, EStatusVeiculo.Disponivel.ToString());
+//try
+//{
+//    veiculoController.AdicionarVeiculo(veiculo);
+//    Console.WriteLine("Veículo adicionado com sucesso");
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine(ex.Message);
+//}
+#endregion
+
+#region ListarVeiculos
+//try
+//{
+//    List<Veiculo> veiculos = veiculoController.ListarTodosVeiculos();
+//    foreach (var veiculo in veiculos)
+//    {
+//        Console.WriteLine(veiculo);
+//    }
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine(ex.Message);
+//}
+#endregion
+
+
+
+#endregion

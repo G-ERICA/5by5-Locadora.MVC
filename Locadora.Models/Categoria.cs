@@ -23,19 +23,28 @@ namespace Locadora.Models
                                                                 FROM tblCategorias
                                                                 WHERE Nome = @Nome";
 
+        public static readonly string SELECTCATEGORIAPORID = @"SELECT Nome
+                                                                FROM tblCategorias
+                                                                WHERE CategoriaID = @CategoriaID";
+
         public static readonly string DELETECATEGORIA = @"DELETE FROM tblCategorias
                                                           WHERE Nome = @Nome";
 
+        public static readonly string INSERTCATEGORIAPROCEDURE = @"EXEC sp_AdicionarCategoria @Nome, @Descricao, @Diaria;";
+
         public int CategoriaID { get; private set; }
         public string Nome { get; private set; }
-        public string Descricao { get; private set; }
+        public string? Descricao { get; private set; }
         public decimal Diaria { get; private set; }
 
-        public Categoria(string nome, string descricao, decimal diaria)
+        public Categoria(string nome, decimal diaria)
         {
             Nome = nome;
-            Descricao = descricao;
             Diaria = diaria;
+        }
+        public Categoria(string nome, decimal diaria, string? descricao) : this (nome, diaria)
+        {
+            Descricao = descricao;
         }
 
         public void SetCategoriaID(int categoriaID)

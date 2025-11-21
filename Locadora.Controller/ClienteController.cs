@@ -1,11 +1,12 @@
-﻿using Locadora.Models;
+﻿using Locadora.Controller.Interfaces;
+using Locadora.Models;
 using Microsoft.Data.SqlClient;
 using Utils.Databases;
 
 
 namespace Locadora.Controller
 {
-    public class ClienteController
+    public class ClienteController : IClienteController
     {
 
         public void AdicionarCliente(Cliente cliente, Documento documento)

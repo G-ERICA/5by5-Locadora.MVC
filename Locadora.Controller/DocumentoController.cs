@@ -1,4 +1,5 @@
-﻿using Locadora.Models;
+﻿using Locadora.Controller.Interfaces;
+using Locadora.Models;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Locadora.Controller
 {
-    public class DocumentoController
+    public class DocumentoController : IDocumentoController
     {
         public void AdicionarDocumento(Documento documento, SqlConnection connection, SqlTransaction transaction)
         {
@@ -36,7 +37,6 @@ namespace Locadora.Controller
                 throw new Exception("Erro inesperado ao adicionar documento: " + ex.Message);
             }
         }
-
         public void AtualizarDocumentos(Documento documento, SqlConnection connection, SqlTransaction transaction)
         {
             try

@@ -23,6 +23,10 @@
                                                             ON c.ClienteID = d.ClienteID
                                                             WHERE Email = @Email";
 
+        public static readonly string SELECTCLIENTEPORID = @"SELECT Nome 
+                                                            FROM tblClientes 
+                                                            WHERE ClienteID = @ClienteID";
+
         public static readonly string DELETECLIENTE = @"DELETE FROM tblClientes
                                                        WHERE ClienteID = @IDCliente";
 

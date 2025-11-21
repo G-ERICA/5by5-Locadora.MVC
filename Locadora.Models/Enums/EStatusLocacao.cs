@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Locadora.Controller.Interfaces
+namespace Locadora.Models.Enums
 {
-    public interface IFuncionarioLocacaoController
+    public enum EStatusLocacao
     {
-        
-
+        Ativa,
+        Concluida,
+        Cancelada
     }
 }

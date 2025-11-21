@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Locadora.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,12 +21,24 @@ namespace Locadora.Models
                                                              FROM tblVeiculos
                                                              WHERE Placa = @Placa";
 
+        public static readonly string SELECTDIARIAPORVEICULO = @"SELECT c.Diaria
+                                                                FROM tblVeiculos v
+                                                                JOIN tblCategorias c
+                                                                ON v.CategoriaID = c.CategoriaID
+                                                                WHERE VeiculoID = @VeiculoID";
+
+        public static readonly string SELECTVEICULOPORID = @"SELECT Marca, Modelo, StatusVeiculo 
+                                                                FROM tblVeiculos 
+                                                             WHERE VeiculoID = @VeiculoID";
+
+
         public static readonly string UPDATEVEICULO = @"UPDATE tblVeiculos 
                                                         SET StatusVeiculo = @StatusVeiculo 
                                                         WHERE Placa = @Placa";
 
         public static readonly string DELETEVEICULO = @"DELETE FROM tblVeiculos 
                                                         WHERE Placa = @Placa";
+
 
         public int VeiculoID { get; private set; }
         public int CategoriaID { get; private set; }

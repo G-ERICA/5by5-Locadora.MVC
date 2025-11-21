@@ -14,7 +14,7 @@ namespace Locadora.Models
 
         public static readonly string SELECTLOCAOPORVEICULOID = @"SELECT Status FROM tblLocacoes WHERE VeiculoID = @VeiculoID";
 
-        public static readonly string SELECTLOCACOES = @"SELECT 
+        public static readonly string SELECTLOCACOES = @"SELECT f.Nome,
                                                         c.Nome, 
                                                         v.Marca, v.Modelo, 
                                                         l.ClienteID, l.VeiculoID, 
@@ -96,7 +96,16 @@ namespace Locadora.Models
 
         public override string? ToString()
         {
-            return $"Data Locação: {DataLocacao}\nData Devolução Prevista: {DataDevolucaoPrevista}\nData Devolução Real: {DataDevolucaoReal}\nValor Diária: {ValorDiaria}\nValor Total: {ValorTotal}\nMulta: {Multa}\nStatus: {Status}";
+            return $"Cliente: {NomeCliente}\n" +
+                $"Marca: {Marca}\n" +
+                $"Modelo: {Modelo}\n" +
+                $"Data Locação: {DataLocacao}\n" +
+                $"Data Devolução Prevista: {DataDevolucaoPrevista}\n" +
+                $"Data Devolução Real: {DataDevolucaoReal}\n" +
+                $"Valor Diária: {ValorDiaria}\n" +
+                $"Valor Total: {ValorTotal}\n" +
+                $"Multa: {Multa}\n" +
+                $"Status: {Status}\n";
         }
 
     }

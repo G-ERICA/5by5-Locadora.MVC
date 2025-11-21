@@ -15,7 +15,7 @@ namespace Locadora.Controller
 {
     public class LocacaoController : ILocacaoController
     {
-        public void AdicionarLocacao(Locacao locacao)
+        public void AdicionarLocacao(Locacao locacao, string cpf)
         {
             var connection = new SqlConnection(ConnectionDB.GetConnectionString());
             connection.Open();
@@ -23,6 +23,8 @@ namespace Locadora.Controller
             using (SqlTransaction transaction = connection.BeginTransaction()) 
             {
                 VeiculoController veiculoController = new VeiculoController();
+                LocacaoFuncionarioController locacaoFuncionarioController = new LocacaoFuncionarioController();
+                Funcionario funcionario;
 
                 var diaria = veiculoController.BuscarDiariaPorVeiculoID(locacao.VeiculoID);
                     if(diaria == 0) 
@@ -32,7 +34,7 @@ namespace Locadora.Controller
                     if(statusVeiculo != "Disponível") 
                         throw new Exception("Veículo não está disponível para locação.");
 
-
+                
                 var dias = (locacao.DataDevolucaoPrevista - locacao.DataLocacao).TotalDays;
                 var total = diaria * (decimal)dias;
                 
@@ -51,6 +53,12 @@ namespace Locadora.Controller
 
                     command.ExecuteNonQuery();
                     transaction.Commit();
+
+                    veiculoController.AtualizarStatusVeiculo(EStatusVeiculo.Alugado.ToString(), cpf);
+                    //Funcionario funcionario. 
+                    //locacaoFuncionarioController.AdicionarRelação();
+
+
                 }
                 catch (SqlException ex)
                 {
@@ -85,10 +93,10 @@ namespace Locadora.Controller
             {
                 var command = new SqlCommand(Locacao.SELECTLOCACOES, connection);
                 var reader = command.ExecuteReader();
-                var diasLocacao = (int)(reader.GetDateTime(6) - reader.GetDateTime(7)).TotalDays;
 
                 while (reader.Read())
                 {
+                    var diasLocacao = (int)(reader.GetDateTime(7) - reader.GetDateTime(6)).TotalDays;
                     var locacao = new Locacao(
                         reader.GetInt32(4),
                         reader.GetInt32(5),
@@ -96,38 +104,25 @@ namespace Locadora.Controller
                         diasLocacao
                     );
 
-                    //trazer funcionario
-                    var nomeCliente = clienteController.BuscarNomeClientePorID(reader.GetInt32(4));
-                    var marca = veiculoController.BuscarMarcaModeloPorVeiculoID(reader.GetInt32(5));
+                    //TODO:trazer funcionario (posição no select = 0)
 
-                    //locacao.SetFuncionario
-                    
+                    var nomeCliente = clienteController.BuscarNomeClientePorID(reader.GetInt32(4));
+                    var (marca, modelo) = veiculoController.BuscarMarcaModeloPorVeiculoID(reader.GetInt32(5));
+
+                    locacao.SetFuncionario("Teste");
+                    locacao.SetNomeCliente(nomeCliente);
+                    locacao.SetMarca(marca);
+                    locacao.SetModelo(modelo);
                     locacao.SetDataDevolucaoPrevista(reader.GetDateTime(7));
                     locacao.SetDataDevolucaoReal(reader.IsDBNull(8) ? (DateTime?)null : reader.GetDateTime(8));
                     locacao.SetValorDiaria(reader.GetDecimal(9));
                     locacao.SetValorTotal(reader.GetDecimal(10));
                     locacao.SetMulta(reader.GetDecimal(11));
                     locacao.SetStatus((EStatusLocacao)Enum.Parse(typeof(EStatusLocacao), reader.GetString(12)));
+
                     
                     locacoes.Add(locacao);
                 }
-
-
-                /*  
-                0 f.Nome, 
-                1 c.Nome, 
-                2 v.Marca, 
-                3 v.Modelo, 
-                4 l.ClienteID, 
-                5 l.VeiculoID
-                6 l.DataLocacao, 
-                7 l.DataDevolucaoPrevista, 
-                8 l.DataDevolucaoReal, 
-                9 l.ValorDiaria, 
-                10 l.ValorTotal, 
-                11 l.Multa, 
-                12 l.Status 
-                */
                    
                 return locacoes;
             }

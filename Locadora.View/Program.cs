@@ -251,4 +251,8 @@ var locacaoController = new LocacaoController();
 //    Console.WriteLine(ex.Message);
 //}
 
-locacaoController.ListarLocacoes();
+List<Locacao> listaLocacao = locacaoController.ListarLocacoes();
+foreach(var locacao in listaLocacao)
+{
+    Console.WriteLine(locacao);
+}

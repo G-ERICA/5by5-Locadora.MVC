@@ -8,6 +8,7 @@ namespace Locadora.Models
 {
     public class Funcionario
     {
+        public static readonly string INSERTFUNCIONARIO = "INSERT INTO FUNCIONARIO (Nome, CPF, Email, Salario) VALUES (@Nome, @CPF, @Email, @Salario)";
         public int FuncionarioID { get; private set; }
         public string Nome { get; private set; }
         public string CPF { get; private set; }

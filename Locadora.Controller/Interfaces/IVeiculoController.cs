@@ -12,7 +12,7 @@ namespace Locadora.Controller.Interfaces
         public void AdicionarVeiculo(Veiculo veiculo);
         public List<Veiculo> ListarTodosVeiculos();
         public Veiculo BuscarVeiculoPlaca(string placa);
-        public void AtualizarStatusVeiculo(string statusVeiculo);
+        public void AtualizarStatusVeiculo(string statusVeiculo, string placa);
         public void DeletarVeiculo(string placa);
     }
 }

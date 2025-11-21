@@ -16,16 +16,16 @@ namespace Locadora.Models
                                                         JOIN tblCategorias c
                                                         ON v.CategoriaID = c.CategoriaID";
 
-        public static readonly string SELECTVEICULOSNOMECATEGORIA = @"SELECT VeiculoID, CategoriaID, Placa, Marca, Modelo, Ano, StatusVeiculo 
+        public static readonly string SELECTVEICULOSPORPLACA = @"SELECT CategoriaID, Placa, Marca, Modelo, Ano, StatusVeiculo 
                                                              FROM tblVeiculos
                                                              WHERE Placa = @Placa";
 
         public static readonly string UPDATEVEICULO = @"UPDATE tblVeiculos 
-                                                        StatusVeiculo = @StatusVeiculo 
-                                                        WHERE VeiculoID = @VeiculoID";
+                                                        SET StatusVeiculo = @StatusVeiculo 
+                                                        WHERE Placa = @Placa";
 
         public static readonly string DELETEVEICULO = @"DELETE FROM tblVeiculos 
-                                                        WHERE VeiculoID = @VeiculoID";
+                                                        WHERE Placa = @Placa";
 
         public int VeiculoID { get; private set; }
         public int CategoriaID { get; private set; }

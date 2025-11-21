@@ -185,6 +185,30 @@ var veiculoController = new VeiculoController();
 //}
 #endregion
 
+#region AtualizarVeiculo
+//try
+//{
+//    veiculoController.AtualizarStatusVeiculo(EStatusVeiculo.Manutencao.ToString(), "XYZ1234");
+//    Console.WriteLine("Veículo atualizado com sucesso");
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine(ex.Message);
+//}
+#endregion
+
+#region DeletarVeiculo
+//try 
+//{
+//    veiculoController.DeletarVeiculo("XYZ1234");
+//    Console.WriteLine("Veiculo deletado com sucesso");  
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine(ex.Message);
+//}
+#endregion
 
 
 #endregion
+

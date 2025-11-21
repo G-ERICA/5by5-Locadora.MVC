@@ -26,7 +26,7 @@ namespace Locadora.Controller
                     command.Parameters.AddWithValue("@Nome", funcionario.Nome);
                     command.Parameters.AddWithValue("@CPF", funcionario.CPF);
                     command.Parameters.AddWithValue("@Email", funcionario.Email);
-                    command.Parameters.AddWithValue("@Salario", funcionario.Salario);
+                    command.Parameters.AddWithValue("@Salario", funcionario.Salario ?? (object)DBNull.Value);
 
                     command.ExecuteNonQuery();
                     transaction.Commit();
@@ -46,8 +46,6 @@ namespace Locadora.Controller
                     connection.Close();
                 }
             }
-
-
         }
         public List<Funcionario> ListarFuncionarios()
         {

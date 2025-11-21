@@ -212,3 +212,47 @@ var veiculoController = new VeiculoController();
 
 #endregion
 
+#region Funcionarios
+//var funcionarioController = new FuncionarioController();
+
+//var funcionario = new Funcionario("Marcos Vinicius", "32165498700", "vini.marcos@locadora.com", 2650.00M);
+//try 
+//{   
+//    funcionarioController.AdicionarFuncionario(funcionario);
+//    Console.WriteLine("Funcionario adicionado com sucesso");
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine(ex.Message);
+//}
+
+#endregion
+
+
+
+
+
+//TODO: Definir os valores de CLIENTE e VEICULO como nome e modelo = classe locacao
+
+//TODO: CRUD funcionario
+//      CRUD Locacao
+//      View com Menu
+
+
+var locacaoController = new LocacaoController();
+
+//var locacao = new Locacao(5, 1, DateTime.Now, 2);
+//try 
+//{
+//    locacaoController.AdicionarLocacao(locacao);
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine(ex.Message);
+//}
+
+List<Locacao> listaLocacao = locacaoController.ListarLocacoes();
+foreach(var locacao in listaLocacao)
+{
+    Console.WriteLine(locacao);
+}

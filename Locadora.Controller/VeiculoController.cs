@@ -139,6 +139,92 @@ namespace Locadora.Controller
             }
             return null;
         }
+        public decimal BuscarDiariaPorVeiculoID(int veiculoID)
+        {
+            SqlConnection connection = new SqlConnection(ConnectionDB.GetConnectionString());
+            connection.Open();
+            try
+            {
+                var command = new SqlCommand(Veiculo.SELECTDIARIAPORVEICULO, connection);
+                command.Parameters.AddWithValue("@VeiculoID", veiculoID);
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    return reader.GetDecimal(0);
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception("Erro ao buscar diária do veículo: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro inesperado ao buscar diária do veículo: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return 0;
+        }
+        public string BuscarStatusPorVeiculoID(int veiculoID)
+        {
+            SqlConnection connection = new SqlConnection(ConnectionDB.GetConnectionString());
+            connection.Open();
+            try
+            {
+                var command = new SqlCommand(Veiculo.SELECTVEICULOPORID, connection);
+                command.Parameters.AddWithValue("@VeiculoID", veiculoID);
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    return reader.GetString(2);
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception("Erro ao buscar status do veículo: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro inesperado ao buscar status do veículo: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return null;
+        }
+        public (string, string) BuscarMarcaModeloPorVeiculoID(int veiculoID)
+        {
+            SqlConnection connection = new SqlConnection(ConnectionDB.GetConnectionString());
+            connection.Open();
+            try
+            {
+                var command = new SqlCommand(Veiculo.SELECTVEICULOPORID, connection);
+                command.Parameters.AddWithValue("@VeiculoID", veiculoID);
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    return (reader.GetString(0), reader.GetString(1));
+                }
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception("Erro ao buscar marca e modelo do veículo: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro inesperado ao buscar marca e modelo do veículo: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return (null, null);
+        }
         public void AtualizarStatusVeiculo(string statusVeiculo, string placa)
         {
             var connection = new SqlConnection(ConnectionDB.GetConnectionString());

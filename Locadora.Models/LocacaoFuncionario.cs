@@ -8,17 +8,7 @@ namespace Locadora.Models
 {
     public class LocacaoFuncionario
     {
-        public int LocacaoFuncionarioID { get; private set; }
-        public int LocacaoID { get; private set; }
-        public int FuncionarioID { get; private set; }
-        public LocacaoFuncionario(int locacaoID, int funcionarioID)
-        {
-            LocacaoID = locacaoID;
-            FuncionarioID = funcionarioID;
-        }
-        public void SetLocacaoFuncionarioID(int locacaoFuncionarioID)
-        {
-            LocacaoFuncionarioID = locacaoFuncionarioID;
-        }
+        public static readonly string INSERTRELACAO = @"INSERT INTO tblLocacaoFuncionarios(LocacaoID, FuncionarioID) VALUES(@LocacaoID, @FuncionarioID)";
+
     }
 }

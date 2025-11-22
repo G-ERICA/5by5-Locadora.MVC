@@ -230,29 +230,38 @@ var veiculoController = new VeiculoController();
 
 
 
-
-
-//TODO: Definir os valores de CLIENTE e VEICULO como nome e modelo = classe locacao
-
-//TODO: CRUD funcionario
-//      CRUD Locacao
-//      View com Menu
-
-
 var locacaoController = new LocacaoController();
 
-//var locacao = new Locacao(5, 1, DateTime.Now, 2);
-//try 
+//var locacao = new Locacao(5, 8, DateTime.Now, 2);
+//try
 //{
-//    locacaoController.AdicionarLocacao(locacao);
+//    locacaoController.AdicionarLocacao(locacao, "777.888.999-00");
 //}
 //catch (Exception ex)
 //{
 //    Console.WriteLine(ex.Message);
 //}
 
-List<Locacao> listaLocacao = locacaoController.ListarLocacoes();
-foreach(var locacao in listaLocacao)
+
+//try
+//{
+//    List<Locacao> listaLocacao = locacaoController.ListarLocacoes();
+//    foreach (var loc in listaLocacao)
+//    {
+//        Console.WriteLine(loc);
+//    }
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine(ex.Message);
+//}
+
+
+try 
 {
-    Console.WriteLine(locacao);
+    locacaoController.AtualizarStatusLocacao("XYZ1234");
+}
+catch (Exception ex)
+{
+    Console.WriteLine(ex.Message);
 }

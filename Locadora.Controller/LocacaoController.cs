@@ -36,7 +36,9 @@ namespace Locadora.Controller
                     if(statusVeiculo != "Disponível") 
                         throw new Exception("Veículo não está disponível para locação.");
 
-                
+                var funcionario = funcionarioController.BuscarFuncionarioPorCPF(cpf) ?? 
+                    throw new Exception("Funcionário não encontrado.");
+
                 var dias = (locacao.DataDevolucaoPrevista - locacao.DataLocacao).TotalDays;
                 var total = diaria * (decimal)dias;
                 
@@ -60,11 +62,8 @@ namespace Locadora.Controller
 
                     veiculoController.AtualizarStatusVeiculo(EStatusVeiculo.Alugado.ToString(), placaVeiculo);
 
-                    var funcionario = funcionarioController.BuscarFuncionarioPorCPF(cpf);
                     int funcionarioID = funcionario.FuncionarioID;
                     locacaoFuncionarioController.Adicionar(locacaoID, funcionarioID);
-
-
                 }
                 catch (SqlException ex)
                 {
@@ -82,18 +81,16 @@ namespace Locadora.Controller
                 }
             }
         }
-        
         public List<Locacao> ListarLocacoes()
         {
             var connection = new SqlConnection(ConnectionDB.GetConnectionString());
             connection.Open();
 
-            
             var veiculoController = new VeiculoController();
             var clienteController = new ClienteController();
             var funcionarioController = new FuncionarioController();
+            var locacaoFuncionarioController = new LocacaoFuncionarioController();
             var locacoes = new List<Locacao>();
-
 
             try 
             {
@@ -102,29 +99,31 @@ namespace Locadora.Controller
 
                 while (reader.Read())
                 {
-                    var diasLocacao = (int)(reader.GetDateTime(7) - reader.GetDateTime(6)).TotalDays;
-                    var locacao = new Locacao(
+                    var diasLocacao = (int)(reader.GetDateTime(8) - reader.GetDateTime(7)).TotalDays;
+                    Locacao locacao = new Locacao(
                         reader.GetInt32(4),
                         reader.GetInt32(5),
-                        reader.GetDateTime(6),
+                        reader.GetDateTime(7),
                         diasLocacao
                     );
 
-                    //TODO:trazer funcionario (posição no select = 0)
+                    var listaFuncionario = locacaoFuncionarioController.BuscarFuncionariosPorLocacao(reader.GetInt32(6));
+                    string funcionario1 = listaFuncionario[0];
+                    string funcionario2 = listaFuncionario.Count > 1 ? listaFuncionario[1] : "";
 
                     var nomeCliente = clienteController.BuscarNomeClientePorID(reader.GetInt32(4));
-                    //var (marca, modelo) = veiculoController.BuscarMarcaModeloPorVeiculoID(reader.GetInt32(5));
+                    var (marca, modelo, placa) = veiculoController.BuscarMarcaModeloPorVeiculoID(reader.GetInt32(5));
 
-                    locacao.SetFuncionario("Teste");
+                    locacao.SetFuncionario(funcionario1 + (funcionario2 != null ? $" e {funcionario2}" : ""));
                     locacao.SetNomeCliente(nomeCliente);
                     locacao.SetMarca(marca);
                     locacao.SetModelo(modelo);
-                    locacao.SetDataDevolucaoPrevista(reader.GetDateTime(7));
-                    locacao.SetDataDevolucaoReal(reader.IsDBNull(8) ? (DateTime?)null : reader.GetDateTime(8));
-                    locacao.SetValorDiaria(reader.GetDecimal(9));
-                    locacao.SetValorTotal(reader.GetDecimal(10));
-                    locacao.SetMulta(reader.GetDecimal(11));
-                    locacao.SetStatus((EStatusLocacao)Enum.Parse(typeof(EStatusLocacao), reader.GetString(12)));
+                    locacao.SetDataDevolucaoPrevista(reader.GetDateTime(8));
+                    locacao.SetDataDevolucaoReal(reader.IsDBNull(9) ? (DateTime?)null : reader.GetDateTime(9));
+                    locacao.SetValorDiaria(reader.GetDecimal(10));
+                    locacao.SetValorTotal(reader.GetDecimal(11));
+                    locacao.SetMulta(reader.GetDecimal(12));
+                    locacao.SetStatus((EStatusLocacao)Enum.Parse(typeof(EStatusLocacao), reader.GetString(13)));
 
                     
                     locacoes.Add(locacao);
@@ -145,24 +144,153 @@ namespace Locadora.Controller
                 connection.Close();
             }
         }
-
         
-
-        public Locacao BuscarLocacaoPorID(int locacaoID)
+        public void AtualizarStatusLocacao(string placa)
         {
-            return null;
-        }
-        public void AtualizarLocacao(Locacao locacao)
-        {
-          //status cancelado
+            var veiculoController = new VeiculoController();
+            var clienteController = new ClienteController();
+            var locacaoFuncionarioController = new LocacaoFuncionarioController();
+
+            var connection = new SqlConnection(ConnectionDB.GetConnectionString());
+
+            connection.Open();
+
+            using (var transaction = connection.BeginTransaction())
+            {
+                try
+                {
+                    var veiculo = veiculoController.BuscarVeiculoPlaca1(placa, connection, transaction);
+
+                    if (veiculo is null)
+                        throw new Exception("Veículo não encontrado!");
+
+                    var command = new SqlCommand(Locacao.SELECTLOCAOPORVEICULOID, connection, transaction);
+                    command.Parameters.AddWithValue("@VeiculoID", veiculo.VeiculoID);
+
+
+                    //LocacaoID, ClienteID, VeiculoID, DataLocacao, DataDevolucaoPrevista, DataDevolucaoReal, ValorDiaria, ValorTotal, Multa, 
+
+                    var reader = command.ExecuteReader();
+                    Locacao locacao = null;
+                    int diasLocacao = 0;
+
+                    diasLocacao = (int)(reader.GetDateTime(4) - reader.GetDateTime(3)).TotalDays;
+                    while (reader.Read())
+                    {
+                        locacao = new Locacao(
+                            reader.GetInt32(4),
+                            reader.GetInt32(5),
+                            reader.GetDateTime(6),
+                            diasLocacao
+                        );
+                    }
+                        reader.Close();
+
+                        var nomeCliente = clienteController.BuscarNomeClientePorID(reader.GetInt32(4));
+                        var (marca, modelo, placaVeiculo) = veiculoController.BuscarMarcaModeloPorVeiculoID(reader.GetInt32(5));
+
+                        var listaFuncionario = locacaoFuncionarioController.BuscarFuncionariosPorLocacao(reader.GetInt32(6));
+                        string funcionario1 = listaFuncionario[0];
+                        string funcionario2 = listaFuncionario.Count > 1 ? listaFuncionario[1] : "";
+
+                        locacao.SetFuncionario(funcionario1 + (funcionario2 != null ? $" e {funcionario2}" : ""));
+                        locacao.SetNomeCliente(nomeCliente);
+                        locacao.SetMarca(marca);
+                        locacao.SetModelo(modelo);
+                        locacao.SetDataDevolucaoPrevista(reader.GetDateTime(7));
+                        locacao.SetDataDevolucaoReal(reader.IsDBNull(8) ? (DateTime?)null : reader.GetDateTime(8));
+                        locacao.SetValorDiaria(reader.GetDecimal(9));
+                        locacao.SetValorTotal(reader.GetDecimal(10));
+                        locacao.SetMulta(locacao.ValorDiaria);
+
+                        locacao.SetStatus(EStatusLocacao.Cancelada);
+                    
+                    using (transaction)
+                    {
+                        var commandAtualizarLocacao = new SqlCommand(Locacao.UPDATELOCACAO, connection, transaction);
+                        commandAtualizarLocacao.Parameters.AddWithValue("@IdLocacao", locacao.LocacaoID);
+                        commandAtualizarLocacao.Parameters.AddWithValue("@Status", locacao.Status);
+                        commandAtualizarLocacao.ExecuteNonQuery();
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    transaction.Rollback();
+                    throw new Exception("Erro inesperado ao cancelar locação: " + ex.Message);
+                }
+            }
         }
 
-        public void EncerrarLocacao(Locacao locacao) 
-        {
-           /// atualizar valor total real(valor real - valor previsto == multa)
-          //data devolucao
-          //status
-        }
 
+
+        public void EncerrarLocacao(Locacao locacao, string placa)
+        {
+            //buscar a locacao -> placa do veiculo
+
+            var veiculoController = new VeiculoController();
+            var clienteController = new ClienteController();
+            var locacaoFuncionarioController = new LocacaoFuncionarioController();
+            var connection = new SqlConnection(ConnectionDB.GetConnectionString());
+            connection.Open();
+
+            using (var transaction = connection.BeginTransaction())
+            {
+                try
+                {
+                    var veiculo = veiculoController.BuscarVeiculoPlaca(placa);
+                    if (veiculo is null)
+                        throw new Exception("Veículo não encontrado!");
+
+                    var command = new SqlCommand(Locacao.SELECTLOCAOPORVEICULOID, connection, transaction);
+                    command.Parameters.AddWithValue("@VeiculoID", veiculo.VeiculoID);
+
+                    var reader = command.ExecuteReader();
+                    Locacao locacaoEncontrada = null;
+                    int diasLocacao = 0;
+                    while (reader.Read())
+                    {
+                        diasLocacao = (int)(reader.GetDateTime(7) - reader.GetDateTime(6)).TotalDays;
+                        locacaoEncontrada = new Locacao(
+                            reader.GetInt32(4),
+                            reader.GetInt32(5),
+                            reader.GetDateTime(6),
+                            diasLocacao
+                        );
+                    }
+
+                    var nomeCliente = clienteController.BuscarNomeClientePorID(reader.GetInt32(4));
+                    var (marca, modelo, placaVeiculo) = veiculoController.BuscarMarcaModeloPorVeiculoID(reader.GetInt32(5));
+
+                    var listaFuncionario = locacaoFuncionarioController.BuscarFuncionariosPorLocacao(reader.GetInt32(6));
+                    string funcionario1 = listaFuncionario[0];
+                    string funcionario2 = listaFuncionario.Count > 1 ? listaFuncionario[1] : "";
+
+                    locacaoEncontrada.SetFuncionario(funcionario1 + (funcionario2 != null ? $" e {funcionario2}" : ""));
+                    locacaoEncontrada.SetNomeCliente(nomeCliente);
+                    locacaoEncontrada.SetMarca(marca);
+                    locacaoEncontrada.SetModelo(modelo);
+                    locacaoEncontrada.SetDataDevolucaoPrevista(reader.GetDateTime(7));
+                    locacaoEncontrada.SetDataDevolucaoReal(DateTime.Now);
+                    locacaoEncontrada.SetValorDiaria(reader.GetDecimal(9));
+                    locacaoEncontrada.SetValorTotal(locacaoEncontrada.ValorDiaria * (locacaoEncontrada.DataDevolucaoReal.Value.DayOfYear - locacaoEncontrada.DataDevolucaoPrevista.DayOfYear));
+                    locacao.SetMulta(reader.GetDecimal(11));
+
+                    locacaoEncontrada.SetStatus(EStatusLocacao.Concluida);
+
+                    using (transaction)
+                    {
+                        var commandAtualizarLocacao = new SqlCommand(Locacao.UPDATELOCACAO, connection, transaction);
+                        commandAtualizarLocacao.Parameters.AddWithValue("@IdLocacao", locacaoEncontrada.LocacaoID);
+                        commandAtualizarLocacao.Parameters.AddWithValue("@Status", locacaoEncontrada.Status);
+                        commandAtualizarLocacao.ExecuteNonQuery();
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    transaction.Rollback();
+                    throw new Exception("Erro inesperado ao encerrar locação: " + ex.Message);
+                }
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@ using Locadora.Models;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
@@ -95,22 +96,26 @@ namespace Locadora.Controller
 
             return veiculos;
         }
-        public Veiculo BuscarVeiculoPlaca(string placa)
+
+        public Veiculo BuscarVeiculoPlaca1(string placa, SqlConnection connection, SqlTransaction transaction)
         {
-            SqlConnection connection = new SqlConnection(ConnectionDB.GetConnectionString());
-            connection.Open();
+            var categoriaController = new CategoriaController();
+            Veiculo veiculo = null;
+
+            //SqlConnection connection = new SqlConnection(ConnectionDB.GetConnectionString());
+            //connection.Open();
 
             try
             {
-                var categoriaController = new CategoriaController();
-                var command = new SqlCommand(Veiculo.SELECTVEICULOSPORPLACA, connection);
+                var command = new SqlCommand(Veiculo.SELECTVEICULOSPORPLACA, connection, transaction);
+
                 command.Parameters.AddWithValue("@Placa", placa);
 
                 var reader = command.ExecuteReader();
 
                 while (reader.Read())
                 {
-                    Veiculo veiculo = new Veiculo(
+                    veiculo = new Veiculo(
                         reader.GetInt32(0),
                         reader.GetString(1),
                         reader.GetString(2),
@@ -122,7 +127,63 @@ namespace Locadora.Controller
                         categoriaController.BuscarCategoriaPorID
                         (veiculo.CategoriaID)
                     );
-                    return veiculo;
+                    veiculo.SetVeiculoID
+                    (
+                        reader.GetInt32(6)
+                    );
+                }
+                reader.Close();
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception("Erro ao buscar veículo: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro inesperado ao buscar veículo: " + ex.Message);
+            }
+            return veiculo;
+        }
+
+
+
+
+
+
+        public Veiculo BuscarVeiculoPlaca(string placa)
+        {
+            var categoriaController = new CategoriaController();
+            Veiculo veiculo = null;
+
+            SqlConnection connection = new SqlConnection(ConnectionDB.GetConnectionString());
+            connection.Open();
+
+            try
+            {
+                var command = new SqlCommand(Veiculo.SELECTVEICULOSPORPLACA, connection);
+
+                command.Parameters.AddWithValue("@Placa", placa);
+
+                var reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    veiculo = new Veiculo(
+                        reader.GetInt32(0),
+                        reader.GetString(1),
+                        reader.GetString(2),
+                        reader.GetString(3),
+                        reader.GetInt32(4),
+                        reader.GetString(5)
+                    );
+                    veiculo.SetNomeCategoria(
+                        categoriaController.BuscarCategoriaPorID
+                        (veiculo.CategoriaID)
+                    );
+                    veiculo.SetVeiculoID
+                    (
+                        reader.GetInt32(6)
+                    );
                 }
             }
             catch (SqlException ex)
@@ -133,11 +194,7 @@ namespace Locadora.Controller
             {
                 throw new Exception("Erro inesperado ao buscar veículo: " + ex.Message);
             }
-            finally
-            {
-                connection.Close();
-            }
-            return null;
+            return veiculo;
         }
         public decimal BuscarDiariaPorVeiculoID(int veiculoID)
         {
@@ -253,10 +310,6 @@ namespace Locadora.Controller
                 {
                     transaction.Rollback();
                     throw new Exception("Erro inesperado ao atualizar status do veículo: " + ex.Message);
-                }
-                finally
-                {
-                    connection.Close();
                 }
             }
         }

@@ -14,40 +14,6 @@ namespace Locadora.Controller
 {
     public class FuncionarioController : IFuncionarioController
     {
-       //public void AdicionarFuncionario(Funcionario funcionario)
-       // {
-       //     var connection = new SqlConnection(ConnectionDB.GetConnectionString());
-       //     connection.Open();
-
-       //     using (SqlTransaction transaction = connection.BeginTransaction())
-       //     {
-       //         try
-       //         {
-       //             var command = new SqlCommand(Funcionario.INSERTFUNCIONARIO, connection, transaction);
-       //             command.Parameters.AddWithValue("@Nome", funcionario.Nome);
-       //             command.Parameters.AddWithValue("@CPF", funcionario.CPF);
-       //             command.Parameters.AddWithValue("@Email", funcionario.Email);
-       //             command.Parameters.AddWithValue("@Salario", funcionario.Salario ?? (object)DBNull.Value);
-
-       //             command.ExecuteNonQuery();
-       //             transaction.Commit();
-       //         }
-       //         catch (SqlException ex)
-       //         {
-       //             transaction.Rollback();
-       //             throw new Exception("Erro ao adicionar funcionário no banco de dados: " + ex.Message);
-       //         }
-       //         catch (Exception ex)
-       //         {
-       //             transaction.Rollback();
-       //             throw new Exception("Erro inesperado ao adicionar funcionário: " + ex.Message);
-       //         }
-       //         finally
-       //         {
-       //             connection.Close();
-       //         }
-       //     }
-       // }
         public List<Funcionario> ListarFuncionarios()
         {
             return null;
@@ -91,7 +57,6 @@ namespace Locadora.Controller
                 connection.Close();
             }
         }
-
         public string BuscarNomeFuncionarioPorID(int id)
         {
             SqlConnection connection = new SqlConnection(ConnectionDB.GetConnectionString());
@@ -118,8 +83,6 @@ namespace Locadora.Controller
                 throw new Exception("Erro inesperado ao buscar funcionário: " + ex.Message);
             }
         }
-
-
         public void AtualizarFuncionario(string email, decimal salario, string cpf)
         {
 

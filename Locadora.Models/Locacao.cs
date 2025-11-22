@@ -30,7 +30,10 @@ namespace Locadora.Models
                                                         ON lf.FuncionarioID = f.FuncionarioID";
 
         public static readonly string UPDATELOCACAO = @"UPDATE tblLocacoes 
-                                                        SET Status = @Status 
+                                                        SET Status = @Status, 
+                                                        Multa = @Multa, 
+                                                        DataDevolucaoReal = @DataDevolucaoReal, 
+                                                        ValorTotal = @ValorTotal 
                                                         WHERE LocacaoID = @IdLocacao";
 
         public int LocacaoID { get; private set; }
@@ -57,6 +60,10 @@ namespace Locadora.Models
             Status = EStatusLocacao.Ativa;
         }
 
+        public void SetLocacaoID(int locacaoID) 
+        {
+            LocacaoID = locacaoID;
+        }
         public void SetDataDevolucaoPrevista(DateTime dataDevolucaoPrevista)
         {
             DataDevolucaoPrevista = dataDevolucaoPrevista;

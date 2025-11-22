@@ -11,8 +11,7 @@ namespace Locadora.Controller.Interfaces
     {
         public void AdicionarLocacao(Locacao locacao, string cpf);
         public List<Locacao> ListarLocacoes();
-        public Locacao BuscarLocacaoPorID(int locacaoID);
-        public void AtualizarLocacao(Locacao locacao);
-        public void EncerrarLocacao(Locacao locacao);
+        public void CancelarLocacao(string placa);
+        public void EncerrarLocacao(string placa);
     }
 }

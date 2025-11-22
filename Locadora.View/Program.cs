@@ -185,7 +185,7 @@ var veiculoController = new VeiculoController();
 //}
 #endregion
 
-#region AtualizarVeiculo
+//#region AtualizarVeiculo
 //try
 //{
 //    veiculoController.AtualizarStatusVeiculo(EStatusVeiculo.Manutencao.ToString(), "XYZ1234");
@@ -195,7 +195,7 @@ var veiculoController = new VeiculoController();
 //{
 //    Console.WriteLine(ex.Message);
 //}
-#endregion
+//#endregion
 
 #region DeletarVeiculo
 //try 
@@ -212,47 +212,50 @@ var veiculoController = new VeiculoController();
 
 #endregion
 
-#region Funcionarios
-//var funcionarioController = new FuncionarioController();
-
-//var funcionario = new Funcionario("Marcos Vinicius", "32165498700", "vini.marcos@locadora.com", 2650.00M);
-//try 
-//{   
-//    funcionarioController.AdicionarFuncionario(funcionario);
-//    Console.WriteLine("Funcionario adicionado com sucesso");
-//}
-//catch (Exception ex)
-//{
-//    Console.WriteLine(ex.Message);
-//}
-
-#endregion
-
-
-
-
-
-//TODO: Definir os valores de CLIENTE e VEICULO como nome e modelo = classe locacao
-
-//TODO: CRUD funcionario
-//      CRUD Locacao
-//      View com Menu
-
-
+#region Locacao
 var locacaoController = new LocacaoController();
 
-//var locacao = new Locacao(5, 1, DateTime.Now, 2);
-//try 
+//var locacao = new Locacao(5, 8, DateTime.Now, 2);
+//try
 //{
-//    locacaoController.AdicionarLocacao(locacao);
+//    locacaoController.AdicionarLocacao(locacao, "777.888.999-00");
 //}
 //catch (Exception ex)
 //{
 //    Console.WriteLine(ex.Message);
 //}
 
-List<Locacao> listaLocacao = locacaoController.ListarLocacoes();
-foreach(var locacao in listaLocacao)
-{
-    Console.WriteLine(locacao);
-}
+//try
+//{
+//    List<Locacao> listaLocacao = locacaoController.ListarLocacoes();
+//    foreach (var loc in listaLocacao)
+//    {
+//        Console.WriteLine(loc);
+//    }
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine(ex.Message);
+//}
+
+//try
+//{
+//    locacaoController.CancelarLocacao("XYZ1234");
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine(ex.Message);
+//}
+
+
+//try
+//{
+//    locacaoController.EncerrarLocacao("ABC1234");
+//}
+//catch (Exception ex)
+//{
+//    Console.WriteLine(ex.Message);
+//}
+
+
+#endregion

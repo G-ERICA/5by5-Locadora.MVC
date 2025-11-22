@@ -26,6 +26,9 @@ namespace Locadora.Models
         public static readonly string DELETEFUNCIONARIO = @"DELETE FROM tblFuncionarios WHERE FuncionarioID = @IdFuncionario";
 
         public static readonly string SELECTALLFUNCIONARIO = @"SELECT * FROM tblFuncionarios";
+
+        public static readonly string SELECTFUNCIONARIOPORID = @"SELECT Nome FROM tblFuncionarios WHERE FuncionarioID = @IdFuncionario";
+
         public int FuncionarioID { get; private set; }
         public string Nome { get; private set; }
         public string CPF { get; private set; }

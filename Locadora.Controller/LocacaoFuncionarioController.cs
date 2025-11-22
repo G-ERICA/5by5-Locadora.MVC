@@ -20,7 +20,7 @@ namespace Locadora.Controller
             {
                 try
                 {
-                    SqlCommand command = new SqlCommand(LocacaoFuncionario.INSERTRELACAO , connection, transaction);
+                    SqlCommand command = new SqlCommand(LocacaoFuncionario.INSERTRELACAO, connection, transaction);
                     command.Parameters.AddWithValue("@LocacaoID", locacaoID);
                     command.Parameters.AddWithValue("@FuncionarioID", funcionarioID);
 
@@ -44,5 +44,44 @@ namespace Locadora.Controller
                 }
             }
         }
+
+
+        public List<string> BuscarFuncionariosPorLocacao(int locacaoID)
+        {
+            var connection = new SqlConnection(ConnectionDB.GetConnectionString());
+            connection.Open();
+
+            try
+            {
+                List<string> funcionarios = new List<string>();
+                FuncionarioController funcionarioController = new FuncionarioController();
+
+                SqlCommand command = new SqlCommand(LocacaoFuncionario.SELECTFUNCIONARIOSPORLOCACAO, connection);
+                command.Parameters.AddWithValue("@LocacaoID", locacaoID);
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    int funcionarioID = reader.GetInt32(0);
+                    string nomeFuncionario = funcionarioController.BuscarNomeFuncionarioPorID(funcionarioID);
+                    funcionarios.Add(nomeFuncionario);
+                }
+                return funcionarios;
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception("Erro ao buscar funcionários por locação: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro inesperado ao buscar funcionários por locação: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+        }
     }
+
 }

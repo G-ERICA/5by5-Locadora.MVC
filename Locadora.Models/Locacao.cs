@@ -10,14 +10,14 @@ namespace Locadora.Models
 {
     public class Locacao
     {
-        public static readonly string INSERTLOCACAO = "INSERT INTO tblLocacoes (ClienteID, VeiculoID, DataLocacao, DataDevolucaoPrevista, DataDevolucaoReal, ValorDiaria, ValorTotal, Multa, Status) VALUES (@ClienteID, @VeiculoID, @DataLocacao, @DataDevolucaoPrevista, @DataDevolucaoReal, @ValorDiaria, @ValorTotal, @Multa, @Status)";
+        public static readonly string INSERTLOCACAO = "INSERT INTO tblLocacoes (ClienteID, VeiculoID, DataLocacao, DataDevolucaoPrevista, DataDevolucaoReal, ValorDiaria, ValorTotal, Multa, Status) VALUES (@ClienteID, @VeiculoID, @DataLocacao, @DataDevolucaoPrevista, @DataDevolucaoReal, @ValorDiaria, @ValorTotal, @Multa, @Status)" + 
+            "SELECT SCOPE_IDENTITY()";
 
-        public static readonly string SELECTLOCAOPORVEICULOID = @"SELECT Status FROM tblLocacoes WHERE VeiculoID = @VeiculoID";
+        public static readonly string SELECTLOCAOPORVEICULOID = @"SELECT LocacaoID, ClienteID, VeiculoID, DataLocacao, DataDevolucaoPrevista, DataDevolucaoReal, ValorDiaria, ValorTotal, Multa, Status FROM tblLocacoes WHERE VeiculoID = @VeiculoID";
 
-        public static readonly string SELECTLOCACOES = @"SELECT f.Nome,
-                                                        c.Nome, 
-                                                        v.Marca, v.Modelo, 
-                                                        l.ClienteID, l.VeiculoID, 
+        public static readonly string SELECTLOCAOPORVEICULOPLACA = @"SELECT LocacaoID, ClienteID, VeiculoID, DataLocacao, DataDevolucaoPrevista, DataDevolucaoReal, ValorDiaria, ValorTotal, Multa, Status FROM tblLocacoes WHERE Placa = @Placa";
+
+        public static readonly string SELECTLOCACOES = @"SELECT f.Nome, c.Nome, v.Marca, v.Modelo, l.ClienteID, l.VeiculoID, l.LocacaoID, 
                                                         l.DataLocacao, l.DataDevolucaoPrevista, l.DataDevolucaoReal, l.ValorDiaria, l.ValorTotal, l.Multa, l.Status 
                                                         FROM tblLocacoes l 
                                                         JOIN tblVeiculos v 
@@ -28,6 +28,14 @@ namespace Locadora.Models
                                                         ON l.LocacaoID = lf.LocacaoID 
                                                         JOIN tblFuncionarios f 
                                                         ON lf.FuncionarioID = f.FuncionarioID";
+
+        public static readonly string UPDATELOCACAO = @"UPDATE tblLocacoes 
+                                                        SET Status = @Status, 
+                                                        Multa = @Multa, 
+                                                        DataDevolucaoReal = @DataDevolucaoReal, 
+                                                        ValorTotal = @ValorTotal 
+                                                        WHERE LocacaoID = @IdLocacao";
+
         public int LocacaoID { get; private set; }
         public string Funcionario { get; private set; }
         public int ClienteID { get; private set; }
@@ -52,6 +60,10 @@ namespace Locadora.Models
             Status = EStatusLocacao.Ativa;
         }
 
+        public void SetLocacaoID(int locacaoID) 
+        {
+            LocacaoID = locacaoID;
+        }
         public void SetDataDevolucaoPrevista(DateTime dataDevolucaoPrevista)
         {
             DataDevolucaoPrevista = dataDevolucaoPrevista;
@@ -96,7 +108,8 @@ namespace Locadora.Models
 
         public override string? ToString()
         {
-            return $"Cliente: {NomeCliente}\n" +
+            return $"Funcionario: {Funcionario}\n" +
+                $"Cliente: {NomeCliente}\n" +
                 $"Marca: {Marca}\n" +
                 $"Modelo: {Modelo}\n" +
                 $"Data Locação: {DataLocacao}\n" +

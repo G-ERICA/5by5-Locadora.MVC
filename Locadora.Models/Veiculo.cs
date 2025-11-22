@@ -17,7 +17,7 @@ namespace Locadora.Models
                                                         JOIN tblCategorias c
                                                         ON v.CategoriaID = c.CategoriaID";
 
-        public static readonly string SELECTVEICULOSPORPLACA = @"SELECT CategoriaID, Placa, Marca, Modelo, Ano, StatusVeiculo 
+        public static readonly string SELECTVEICULOSPORPLACA = @"SELECT CategoriaID, Placa, Marca, Modelo, Ano, StatusVeiculo, VeiculoID 
                                                              FROM tblVeiculos
                                                              WHERE Placa = @Placa";
 
@@ -60,6 +60,10 @@ namespace Locadora.Models
             StatusVeiculo = statusVeiculo;
         }
 
+        public void SetVeiculoID(int veiculoID)
+        {
+            VeiculoID = veiculoID;
+        }
         public void SetNomeCategoria(string nomecategoria)
         {
             NomeCategoria = nomecategoria;

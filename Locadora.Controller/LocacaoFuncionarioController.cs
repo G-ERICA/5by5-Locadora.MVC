@@ -11,7 +11,7 @@ namespace Locadora.Controller
 {
     public class LocacaoFuncionarioController
     {
-        public void AdicionarRelação(int locacaoID, int funcionarioID)
+        public void Adicionar(int locacaoID, int funcionarioID)
         {
             var connection = new SqlConnection(ConnectionDB.GetConnectionString());
             connection.Open();

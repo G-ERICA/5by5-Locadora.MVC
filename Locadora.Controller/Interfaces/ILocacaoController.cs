@@ -13,5 +13,6 @@ namespace Locadora.Controller.Interfaces
         public List<Locacao> ListarLocacoes();
         public Locacao BuscarLocacaoPorID(int locacaoID);
         public void AtualizarLocacao(Locacao locacao);
+        public void EncerrarLocacao(Locacao locacao);
     }
 }

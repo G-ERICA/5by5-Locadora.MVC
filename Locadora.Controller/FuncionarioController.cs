@@ -53,7 +53,42 @@ namespace Locadora.Controller
         }
         public Funcionario BuscarFuncionarioPorCPF(string cpf)
         {
-            return null;
+            SqlConnection connection = new SqlConnection(ConnectionDB.GetConnectionString());
+
+            connection.Open();
+            try
+            {
+                SqlCommand command = new SqlCommand(Funcionario.SELECTFUNCIONARIOPORCPF, connection);
+
+                command.Parameters.AddWithValue("@CPF", cpf);
+
+                SqlDataReader reader = command.ExecuteReader();
+                Funcionario funcionario = null;
+                if (reader.Read())
+                {
+                    funcionario = new Funcionario(
+                        reader["Nome"].ToString(),
+                        reader["CPF"].ToString(),
+                        reader["Email"].ToString(),
+                        (decimal)reader["Salario"]
+                    );
+                    funcionario.setFuncionarioID(Convert.ToInt32(reader["FuncionarioID"]));
+                }
+
+                return funcionario;
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception("Erro ao buscar funcionario por cpf: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro inesperado ao buscar funcionario por cpf: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
         }
         public void AtualizarFuncionario(string email, decimal salario, string cpf)
         {

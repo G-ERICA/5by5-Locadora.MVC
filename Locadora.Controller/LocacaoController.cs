@@ -5,7 +5,9 @@ using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Drawing;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -22,9 +24,9 @@ namespace Locadora.Controller
 
             using (SqlTransaction transaction = connection.BeginTransaction()) 
             {
-                VeiculoController veiculoController = new VeiculoController();
                 LocacaoFuncionarioController locacaoFuncionarioController = new LocacaoFuncionarioController();
-                Funcionario funcionario;
+                VeiculoController veiculoController = new VeiculoController();
+                FuncionarioController funcionarioController = new FuncionarioController();
 
                 var diaria = veiculoController.BuscarDiariaPorVeiculoID(locacao.VeiculoID);
                     if(diaria == 0) 
@@ -51,12 +53,16 @@ namespace Locadora.Controller
                     command.Parameters.AddWithValue("@Multa", (object?)locacao.Multa ?? DBNull.Value);
                     command.Parameters.AddWithValue("@Status", locacao.Status.ToString());
 
-                    command.ExecuteNonQuery();
+                    int locacaoID = Convert.ToInt32(command.ExecuteScalar());
                     transaction.Commit();
 
-                    veiculoController.AtualizarStatusVeiculo(EStatusVeiculo.Alugado.ToString(), cpf);
-                    //Funcionario funcionario. 
-                    //locacaoFuncionarioController.AdicionarRelação();
+                    var (marca, modelo, placaVeiculo) = veiculoController.BuscarMarcaModeloPorVeiculoID(locacao.VeiculoID);
+
+                    veiculoController.AtualizarStatusVeiculo(EStatusVeiculo.Alugado.ToString(), placaVeiculo);
+
+                    var funcionario = funcionarioController.BuscarFuncionarioPorCPF(cpf);
+                    int funcionarioID = funcionario.FuncionarioID;
+                    locacaoFuncionarioController.Adicionar(locacaoID, funcionarioID);
 
 
                 }
@@ -107,7 +113,7 @@ namespace Locadora.Controller
                     //TODO:trazer funcionario (posição no select = 0)
 
                     var nomeCliente = clienteController.BuscarNomeClientePorID(reader.GetInt32(4));
-                    var (marca, modelo) = veiculoController.BuscarMarcaModeloPorVeiculoID(reader.GetInt32(5));
+                    //var (marca, modelo) = veiculoController.BuscarMarcaModeloPorVeiculoID(reader.GetInt32(5));
 
                     locacao.SetFuncionario("Teste");
                     locacao.SetNomeCliente(nomeCliente);
@@ -140,7 +146,7 @@ namespace Locadora.Controller
             }
         }
 
-
+        
 
         public Locacao BuscarLocacaoPorID(int locacaoID)
         {
@@ -148,7 +154,15 @@ namespace Locadora.Controller
         }
         public void AtualizarLocacao(Locacao locacao)
         {
-
+          //status cancelado
         }
+
+        public void EncerrarLocacao(Locacao locacao) 
+        {
+           /// atualizar valor total real(valor real - valor previsto == multa)
+          //data devolucao
+          //status
+        }
+
     }
 }

@@ -27,8 +27,8 @@ namespace Locadora.Models
                                                                 ON v.CategoriaID = c.CategoriaID
                                                                 WHERE VeiculoID = @VeiculoID";
 
-        public static readonly string SELECTVEICULOPORID = @"SELECT Marca, Modelo, StatusVeiculo 
-                                                                FROM tblVeiculos 
+        public static readonly string SELECTVEICULOPORID = @"SELECT Marca, Modelo, StatusVeiculo, Placa 
+                                                            FROM tblVeiculos 
                                                              WHERE VeiculoID = @VeiculoID";
 
 

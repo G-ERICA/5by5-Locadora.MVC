@@ -1,4 +1,4 @@
-﻿using Locadora.Controller.Interfaces;
+﻿﻿using Locadora.Controller.Interfaces;
 using Locadora.Models;
 using Microsoft.Data.SqlClient;
 using System;
@@ -103,6 +103,7 @@ namespace Locadora.Controller
                     string nomeCategoria = reader["Nome"].ToString();
                     return nomeCategoria;
                 }
+            
             }
             catch (SqlException ex)
             {

@@ -13,7 +13,7 @@ namespace Locadora.Models
         public static readonly string INSERTLOCACAO = "INSERT INTO tblLocacoes (ClienteID, VeiculoID, DataLocacao, DataDevolucaoPrevista, DataDevolucaoReal, ValorDiaria, ValorTotal, Multa, Status) VALUES (@ClienteID, @VeiculoID, @DataLocacao, @DataDevolucaoPrevista, @DataDevolucaoReal, @ValorDiaria, @ValorTotal, @Multa, @Status)" + 
             "SELECT SCOPE_IDENTITY()";
 
-        public static readonly string SELECTLOCAOPORVEICULOID = @"SELECT LocacaoID, ClienteID, VeiculoID, DataLocacao, DataDevolucaoPrevista, DataDevolucaoReal, ValorDiaria, ValorTotal, Multa, Status FROM tblLocacoes WHERE VeiculoID = @VeiculoID";
+        public static readonly string SELECTLOCAOPORID = @"SELECT LocacaoID, ClienteID, VeiculoID, DataLocacao, DataDevolucaoPrevista, DataDevolucaoReal, ValorDiaria, ValorTotal, Multa, Status FROM tblLocacoes WHERE LocacaoID = @LocacaoID";
 
         public static readonly string SELECTLOCAOPORVEICULOPLACA = @"SELECT LocacaoID, ClienteID, VeiculoID, DataLocacao, DataDevolucaoPrevista, DataDevolucaoReal, ValorDiaria, ValorTotal, Multa, Status FROM tblLocacoes WHERE Placa = @Placa";
 

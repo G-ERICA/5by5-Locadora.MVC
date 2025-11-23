@@ -1,14 +1,6 @@
 ﻿using Locadora.Controller.Interfaces;
 using Locadora.Models;
 using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Data.SqlTypes;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
 using Utils.Databases;
 
 namespace Locadora.Controller
@@ -66,7 +58,7 @@ namespace Locadora.Controller
 
                 while (reader.Read())
                 {
-                    string categoria = categoriaController.BuscarCategoriaPorID(reader.GetInt32(0));
+                    //string categoria = categoriaController.BuscarCategoriaPorID(reader.GetInt32(0));
 
                     var veiculo = new Veiculo(
                         reader.GetInt32(0),
@@ -76,7 +68,7 @@ namespace Locadora.Controller
                         reader.GetInt32(5),
                         reader.GetString(6)
                     );
-                    veiculo.SetNomeCategoria(categoria);
+                    veiculo.SetNomeCategoria(reader.GetString(1));
 
                     veiculos.Add(veiculo);
                 }
@@ -126,61 +118,7 @@ namespace Locadora.Controller
             }
             return veiculo;
         }
-
-
-
-
-        //public Veiculo BuscarVeiculoPlaca(string placa)
-        //{
-        //    var categoriaController = new CategoriaController();
-        //    Veiculo veiculo = null;
-
-        //    SqlConnection connection = new SqlConnection(ConnectionDB.GetConnectionString());
-        //    connection.Open();
-
-        //    try
-        //    {
-        //        var command = new SqlCommand(Veiculo.SELECTVEICULOSPORPLACA, connection);
-
-        //        command.Parameters.AddWithValue("@Placa", placa);
-
-        //        var reader = command.ExecuteReader();
-
-        //        if (reader.Read())
-        //        {
-        //            veiculo = new Veiculo(
-        //                reader.GetInt32(0),
-        //                reader.GetString(1),
-        //                reader.GetString(2),
-        //                reader.GetString(3),
-        //                reader.GetInt32(4),
-        //                reader.GetString(5)
-        //            );
-        //            veiculo.SetNomeCategoria(
-        //                categoriaController.BuscarCategoriaPorID
-        //                (veiculo.CategoriaID)
-        //            );
-        //            veiculo.SetVeiculoID
-        //            (
-        //                reader.GetInt32(6)
-        //            );
-        //        }
-        //        reader.Close();
-        //        return veiculo;
-        //    }
-        //    catch (SqlException ex)
-        //    {
-        //        throw new Exception("Erro ao buscar veículo: " + ex.Message);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("Erro inesperado ao buscar veículo: " + ex.Message);
-        //    }
-        //    finally
-        //    {
-        //        connection.Close();
-        //    }
-        //}
+        
         public decimal BuscarDiariaPorVeiculoID(int veiculoID)
         {
             SqlConnection connection = new SqlConnection(ConnectionDB.GetConnectionString());

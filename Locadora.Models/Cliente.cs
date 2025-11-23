@@ -1,4 +1,4 @@
-﻿namespace Locadora.Models
+﻿﻿namespace Locadora.Models
 {
     public class Cliente
     {

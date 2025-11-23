@@ -139,26 +139,3 @@ INSERT INTO tblLocacaoFuncionarios (LocacaoID, FuncionarioID) VALUES
 -- Pedro envolvido na Locação 2
 INSERT INTO tblLocacaoFuncionarios (LocacaoID, FuncionarioID) VALUES
 (2, 2);
-
-
----CRIAÇÃO EM AULA----
-
---Teste PROCEDURE INSERT Categoria
-CREATE OR ALTER PROCEDURE sp_AdicionarCategoria
-    @Nome VARCHAR(50),
-    @Descricao VARCHAR(255),
-    @Diaria DECIMAL(10,2)
-AS
-BEGIN
-    SET NOCOUNT ON;
-    
-    BEGIN TRY
-        INSERT INTO tblCategorias (Nome, Descricao, Diaria) 
-        VALUES (@Nome, @Descricao, @Diaria);
-        
-        PRINT 'Categoria adicionada!'
-    END TRY
-    BEGIN CATCH 
-        print 'Um erro aconteceu ao adicionar o cliente: ' + ERROR_MESSAGE()
-    END CATCH
-END  

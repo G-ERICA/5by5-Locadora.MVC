@@ -234,6 +234,7 @@ namespace Locadora.Controller
                 }
                 catch (SqlException ex)
                 {
+
                     transaction.Rollback();
                     throw new Exception("Erro ao atualizar documento do cliente: " + ex.Message);
                 }

@@ -1,15 +1,16 @@
-﻿using Locadora.Models;
+﻿﻿using Locadora.Models;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Locadora.Controller.Interfaces;
 using Utils.Databases;
 
 namespace Locadora.Controller
 {
-    public class LocacaoFuncionarioController
+    public class LocacaoFuncionarioController : ILocacaoFuncionarioController
     {
         public void Adicionar(int locacaoID, int funcionarioID)
         {

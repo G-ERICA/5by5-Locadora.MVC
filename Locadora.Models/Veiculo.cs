@@ -1,4 +1,4 @@
-﻿using Locadora.Models.Enums;
+﻿﻿using Locadora.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,7 +76,12 @@ namespace Locadora.Models
 
         public override string? ToString()
         {
-            return $"Placa: {Placa}\nMarca: {Marca}\nModelo: {Modelo}\nAno: {Ano}\nStatus: {StatusVeiculo}\nCategoria: {NomeCategoria}\n";
+            return $"Placa: {Placa}\n" +
+                $"Marca: {Marca}\n" +
+                $"Modelo: {Modelo}\n" +
+                $"Ano: {Ano}\n" +
+                $"Status: {StatusVeiculo}\n" +
+                $"Categoria: {NomeCategoria}\n";
         }
     }
 }

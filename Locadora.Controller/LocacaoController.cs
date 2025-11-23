@@ -1,16 +1,8 @@
-﻿using Locadora.Controller.Interfaces;
+﻿﻿using Locadora.Controller.Interfaces;
 using Locadora.Models;
 using Locadora.Models.Enums;
 using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Drawing;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
+using System.Numerics;
 using Utils.Databases;
 
 namespace Locadora.Controller
@@ -144,7 +136,7 @@ namespace Locadora.Controller
                 connection.Close();
             }
         }
-        public void CancelarLocacao(string placa)
+        public void CancelarLocacao(int locacaoID)
         {
             var veiculoController = new VeiculoController();
             var clienteController = new ClienteController();
@@ -156,15 +148,11 @@ namespace Locadora.Controller
 
             using (var transaction = connection.BeginTransaction())
             {
-                var veiculo = veiculoController.BuscarVeiculoPlaca(placa);
-                    if (veiculo is null)
-                        throw new Exception("Veículo não encontrado!");
-
                 try
                 {
 
-                    var command = new SqlCommand(Locacao.SELECTLOCAOPORVEICULOID, connection, transaction);
-                    command.Parameters.AddWithValue("@VeiculoID", veiculo.VeiculoID);
+                    var command = new SqlCommand(Locacao.SELECTLOCAOPORID, connection, transaction);
+                    command.Parameters.AddWithValue("@LocacaoId", locacaoID);
 
                     Locacao locacao = null;
                     using (var reader = command.ExecuteReader())
@@ -196,6 +184,11 @@ namespace Locadora.Controller
                     commandAtualizarLocacao.Parameters.AddWithValue("@Status", locacao.Status.ToString());
                     commandAtualizarLocacao.Parameters.AddWithValue("@Multa", locacao.Multa);
                     commandAtualizarLocacao.Parameters.AddWithValue("@DataDevolucaoReal", locacao.DataDevolucaoReal);
+                    commandAtualizarLocacao.Parameters.AddWithValue("@ValorTotal", locacao.Multa);
+
+                    var (marca, modelo, placaVeiculo) = veiculoController.BuscarMarcaModeloPorVeiculoID(locacao.VeiculoID);
+                    veiculoController.AtualizarStatusVeiculo(EStatusVeiculo.Disponivel.ToString(), placaVeiculo);
+
                     commandAtualizarLocacao.ExecuteNonQuery();
                     transaction.Commit();
                 }
@@ -206,7 +199,7 @@ namespace Locadora.Controller
                 }
             }
         }
-        public void EncerrarLocacao(string placa)
+        public void EncerrarLocacao(int locacaoID)
         {
             var veiculoController = new VeiculoController();
             var clienteController = new ClienteController();
@@ -218,15 +211,15 @@ namespace Locadora.Controller
 
             using (var transaction = connection.BeginTransaction())
             {
-                var veiculo = veiculoController.BuscarVeiculoPlaca(placa);
-                if (veiculo is null)
-                    throw new Exception("Veículo não encontrado!");
+                //var veiculo = veiculoController.BuscarVeiculoPlaca(placa);
+                //if (veiculo is null)
+                //    throw new Exception("Veículo não encontrado!");
 
                 try
                 {
 
-                    var command = new SqlCommand(Locacao.SELECTLOCAOPORVEICULOID, connection, transaction);
-                    command.Parameters.AddWithValue("@VeiculoID", veiculo.VeiculoID);
+                    var command = new SqlCommand(Locacao.SELECTLOCAOPORID, connection, transaction);
+                    command.Parameters.AddWithValue("@locacaoID", locacaoID);
 
                     using (var reader = command.ExecuteReader())
                     {
@@ -263,6 +256,10 @@ namespace Locadora.Controller
                     commandAtualizarLocacao.Parameters.AddWithValue("@Multa", locacaoEncontrada.Multa);
                     commandAtualizarLocacao.Parameters.AddWithValue("@DataDevolucaoReal", locacaoEncontrada.DataDevolucaoReal);
                     commandAtualizarLocacao.Parameters.AddWithValue("@ValorTotal", locacaoEncontrada.ValorTotal);
+
+
+                    var (marca, modelo, placaVeiculo) = veiculoController.BuscarMarcaModeloPorVeiculoID(locacaoEncontrada.VeiculoID);
+                    veiculoController.AtualizarStatusVeiculo(EStatusVeiculo.Disponivel.ToString(), placaVeiculo);
 
                     commandAtualizarLocacao.ExecuteNonQuery();
                     transaction.Commit();

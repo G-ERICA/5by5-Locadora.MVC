@@ -58,17 +58,16 @@ namespace Locadora.Controller
 
                 while (reader.Read())
                 {
-                    //string categoria = categoriaController.BuscarCategoriaPorID(reader.GetInt32(0));
 
                     var veiculo = new Veiculo(
                         reader.GetInt32(0),
                         reader.GetString(2),
                         reader.GetString(3),
                         reader.GetString(4),
-                        reader.GetInt32(5),
-                        reader.GetString(6)
+                        reader.GetInt32(5)
                     );
                     veiculo.SetNomeCategoria(reader.GetString(1));
+                    veiculo.SetStatusVeiculo(reader.GetString(6));
 
                     veiculos.Add(veiculo);
                 }
@@ -106,10 +105,10 @@ namespace Locadora.Controller
                             reader.GetString(1),
                             reader.GetString(2),
                             reader.GetString(3),
-                            reader.GetInt32(4),
-                            reader.GetString(5)
+                            reader.GetInt32(4)
                         );
                         veiculo.SetVeiculoID(reader.GetInt32(6));
+                        veiculo.SetStatusVeiculo(reader.GetString(5));
                     }
                 }
             }

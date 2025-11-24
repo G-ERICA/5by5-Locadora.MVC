@@ -59,7 +59,7 @@ namespace Locadora.View
                         DateOnly emissao =
                             InputHelper.LerDataEmissao("Digite a Data de Emissão (dd/MM/yyyy): ", "Data inválida!");
                         DateOnly validade =
-                            InputHelper.LerDataValidade("Digite a data de Validade (dd/MM/yyyy): ", "Data inválida!");
+                            InputHelper.LerDataValidade("Digite a data de Validade (dd/MM/yyyy): ", "Data inválida!", emissao);
 
                         Documento documento = new Documento(tipoDoc, numero, emissao, validade);
                         try

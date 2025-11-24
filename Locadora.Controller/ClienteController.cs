@@ -258,6 +258,11 @@ namespace Locadora.Controller
             if (clienteEncontrado is null)
                 throw new Exception("Não existe cliente cadastrado com este email");
 
+            if (ClientePossuiLocacaoAtiva(clienteEncontrado.ClienteId))
+            {
+                throw new Exception("Não é possível remover este cliente: ele possui locações ativas.");
+            }
+
             var connection = new SqlConnection(ConnectionDB.GetConnectionString());
             connection.Open();
 
@@ -286,6 +291,28 @@ namespace Locadora.Controller
                 }
             }
 
+        }
+        public bool ClientePossuiLocacaoAtiva(int clienteId)             
+        {
+            SqlConnection connection = new SqlConnection(ConnectionDB.GetConnectionString());
+            connection.Open();
+
+            try
+            {
+                SqlCommand command = new SqlCommand(Cliente.SELECTLOCACOESATIVASDOCLIENTE, connection);
+                command.Parameters.AddWithValue("@ClienteID", clienteId);
+
+                int locacoesAtivas = Convert.ToInt32(command.ExecuteScalar());
+                return locacoesAtivas > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao verificar locações ativas do cliente: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
         }
     }
 }

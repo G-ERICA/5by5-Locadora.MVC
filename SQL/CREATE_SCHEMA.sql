@@ -139,3 +139,8 @@ INSERT INTO tblLocacaoFuncionarios (LocacaoID, FuncionarioID) VALUES
 -- Pedro envolvido na Locação 2
 INSERT INTO tblLocacaoFuncionarios (LocacaoID, FuncionarioID) VALUES
 (2, 2);
+
+
+UPDATE tblLocacoes
+SET Status = 'Concluida'
+where LocacaoID = 3

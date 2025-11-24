@@ -21,7 +21,8 @@ public class FuncionarioController : IFuncionarioController
                 command.Parameters.AddWithValue("@Nome", funcionario.Nome);
                 command.Parameters.AddWithValue("@CPF", funcionario.CPF);
                 command.Parameters.AddWithValue("@Email", funcionario.Email);
-                command.Parameters.AddWithValue("@Salario", funcionario.Salario);
+                command.Parameters.AddWithValue("@Salario",
+                     funcionario.Salario == null ? DBNull.Value : funcionario.Salario);
                 int funcionarioID = Convert.ToInt32(command.ExecuteScalar());
                 funcionario.setFuncionarioID(funcionarioID);
                 transaction.Commit();
@@ -55,7 +56,7 @@ public class FuncionarioController : IFuncionarioController
                     reader["Nome"].ToString(),
                     reader["CPF"].ToString(),
                     reader["Email"].ToString(),
-                    (decimal)reader["Salario"]
+                    reader["Salario"] == DBNull.Value ? null : (decimal)reader["Salario"]
                 );
                 funcionario.setFuncionarioID((int)reader["FuncionarioID"]);
                 funcionarios.Add(funcionario);
@@ -91,7 +92,7 @@ public class FuncionarioController : IFuncionarioController
                     reader["Nome"].ToString(),
                     reader["CPF"].ToString(),
                     reader["Email"].ToString(),
-                    (decimal)reader["Salario"]
+                      reader["Salario"] == DBNull.Value ? null : (decimal)reader["Salario"]
                 );
                 funcionario.setFuncionarioID(Convert.ToInt32(reader["FuncionarioID"]));
             }

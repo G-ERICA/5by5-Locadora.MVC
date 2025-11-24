@@ -88,9 +88,6 @@ namespace Locadora.Controller
 
             return veiculos;
         }
-
-
-
         public Veiculo BuscarVeiculoPlaca(string placa)
         {
             Veiculo veiculo = null;
@@ -118,15 +115,14 @@ namespace Locadora.Controller
             }
             return veiculo;
         }
-        
-        public decimal BuscarDiariaPorVeiculoID(int veiculoID)
+        public decimal BuscarDiariaPorPlaca(string placa)
         {
             SqlConnection connection = new SqlConnection(ConnectionDB.GetConnectionString());
             connection.Open();
             try
             {
                 var command = new SqlCommand(Veiculo.SELECTDIARIAPORVEICULO, connection);
-                command.Parameters.AddWithValue("@VeiculoID", veiculoID);
+                command.Parameters.AddWithValue("@Placa", placa);
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -146,35 +142,6 @@ namespace Locadora.Controller
                 connection.Close();
             }
             return 0;
-        }
-        public string BuscarStatusPorVeiculoID(int veiculoID)
-        {
-            SqlConnection connection = new SqlConnection(ConnectionDB.GetConnectionString());
-            connection.Open();
-            try
-            {
-                var command = new SqlCommand(Veiculo.SELECTVEICULOPORID, connection);
-                command.Parameters.AddWithValue("@VeiculoID", veiculoID);
-
-                var reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    return reader.GetString(2);
-                }
-            }
-            catch (SqlException ex)
-            {
-                throw new Exception("Erro ao buscar status do veículo: " + ex.Message);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Erro inesperado ao buscar status do veículo: " + ex.Message);
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return null;
         }
         public (string, string, string) BuscarMarcaModeloPorVeiculoID(int veiculoID)
         {
@@ -246,6 +213,11 @@ namespace Locadora.Controller
                 {
                     var veiculoEncontrado = BuscarVeiculoPlaca(placa) ??
                         throw new Exception("Veículo não encontrado para deletar.");
+
+                    if (veiculoEncontrado.StatusVeiculo == "Alugado")
+                    {
+                        throw new Exception("Não é possível remover este veículo: ele está atualmente alugado.");
+                    }
 
                     var command = new SqlCommand(Veiculo.DELETEVEICULO, connection, transaction);
                     command.Parameters.AddWithValue("@Placa", veiculoEncontrado.Placa);

@@ -30,6 +30,8 @@
         public static readonly string DELETECLIENTE = @"DELETE FROM tblClientes
                                                        WHERE ClienteID = @IDCliente";
 
+        public static readonly string SELECTLOCACOESATIVASDOCLIENTE = @"SELECT COUNT(*) FROM tblLocacoes WHERE ClienteID = @ClienteID AND Status = 'Ativa'";
+
         public int ClienteId { get; private set; }
         public string Nome { get; private set; }
         public string Email { get; private set; }

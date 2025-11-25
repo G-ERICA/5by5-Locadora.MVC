@@ -9,7 +9,7 @@ namespace Locadora.Controller
 {
     public class LocacaoController : ILocacaoController
     {
-        public void AdicionarLocacao(Locacao locacao, string cpf)
+        public void AdicionarLocacao(string email, string placa, int diasLocacao, string cpf)
         {
             var connection = new SqlConnection(ConnectionDB.GetConnectionString());
             connection.Open();
@@ -19,17 +19,31 @@ namespace Locadora.Controller
                 LocacaoFuncionarioController locacaoFuncionarioController = new LocacaoFuncionarioController();
                 VeiculoController veiculoController = new VeiculoController();
                 FuncionarioController funcionarioController = new FuncionarioController();
+                ClienteController clienteController =  new ClienteController();
 
-                var diaria = veiculoController.BuscarDiariaPorVeiculoID(locacao.VeiculoID);
+                
+                var Veiculo = veiculoController.BuscarVeiculoPlaca(placa) ?? 
+                    throw new Exception("Veículo não encontrado.");
+
+                if (Veiculo.StatusVeiculo != "Disponível") 
+                        throw new Exception("Veículo não está disponível para locação.");
+
+                var cliente =  clienteController.BuscaClientePorEmail(email) ?? 
+                    throw new Exception("Cliente não encontrado.");
+
+                var diaria = veiculoController.BuscarDiariaPorPlaca(placa);
                     if(diaria == 0) 
                         throw new Exception("Diária do veículo não encontrada.");
 
-                var statusVeiculo = veiculoController.BuscarStatusPorVeiculoID(locacao.VeiculoID);
-                    if(statusVeiculo != "Disponível") 
-                        throw new Exception("Veículo não está disponível para locação.");
-
                 var funcionario = funcionarioController.BuscarFuncionarioPorCPF(cpf) ?? 
                     throw new Exception("Funcionário não encontrado.");
+
+                Locacao locacao = new Locacao(
+                    cliente.ClienteId,
+                    Veiculo.VeiculoID,
+                    DateTime.Now,
+                    diasLocacao
+                );
 
                 var dias = (locacao.DataDevolucaoPrevista - locacao.DataLocacao).TotalDays;
                 var total = diaria * (decimal)dias;
@@ -50,9 +64,7 @@ namespace Locadora.Controller
                     int locacaoID = Convert.ToInt32(command.ExecuteScalar());
                     transaction.Commit();
 
-                    var (marca, modelo, placaVeiculo) = veiculoController.BuscarMarcaModeloPorVeiculoID(locacao.VeiculoID);
-
-                    veiculoController.AtualizarStatusVeiculo(EStatusVeiculo.Alugado.ToString(), placaVeiculo);
+                    veiculoController.AtualizarStatusVeiculo(EStatusVeiculo.Alugado.ToString(), placa);
 
                     int funcionarioID = funcionario.FuncionarioID;
                     locacaoFuncionarioController.Adicionar(locacaoID, funcionarioID);
@@ -91,6 +103,7 @@ namespace Locadora.Controller
 
                 while (reader.Read())
                 {
+                    
                     var diasLocacao = (int)(reader.GetDateTime(8) - reader.GetDateTime(7)).TotalDays;
                     Locacao locacao = new Locacao(
                         reader.GetInt32(4),
@@ -99,9 +112,16 @@ namespace Locadora.Controller
                         diasLocacao
                     );
 
+                    locacao.SetLocacaoID(reader.GetInt32(6));
+                    if(locacoes.Any(l => l.LocacaoID == locacao.LocacaoID))
+                    {
+                        continue;
+                    }
+
+
                     var listaFuncionario = locacaoFuncionarioController.BuscarFuncionariosPorLocacao(reader.GetInt32(6));
                     string funcionario1 = listaFuncionario[0];
-                    string funcionario2 = listaFuncionario.Count > 1 ? listaFuncionario[1] : "";
+                    var funcionario2 = listaFuncionario.Count > 1 ? listaFuncionario[1] : null;
 
                     var nomeCliente = clienteController.BuscarNomeClientePorID(reader.GetInt32(4));
                     var (marca, modelo, placa) = veiculoController.BuscarMarcaModeloPorVeiculoID(reader.GetInt32(5));
@@ -211,10 +231,6 @@ namespace Locadora.Controller
 
             using (var transaction = connection.BeginTransaction())
             {
-                //var veiculo = veiculoController.BuscarVeiculoPlaca(placa);
-                //if (veiculo is null)
-                //    throw new Exception("Veículo não encontrado!");
-
                 try
                 {
 

@@ -46,17 +46,15 @@ public class LocacaoView
                     Console.WriteLine("===== Adicionar Locação =====\n");
 
                     string cpf = InputHelper.LerString("Digite o CPF do funcionário: ", "CPF inválido");
-
-                    int idCliente = InputHelper.LerInt("Digite o ID do cliente: ", "ID do cliente inválido");
-                    int idVeiculo = InputHelper.LerInt("Digite o ID do veículo: ", "ID do veículo inválido");
+                    
+                    string email = InputHelper.LerString("Digite o email do cliente: ", "email do cliente inválido");
+                    string placa = InputHelper.LerString("Digite a placa do veículo: ", "Placa do veículo inválida");
                     int diasLocacao = InputHelper.LerInt("Digite a quantidade de dias de locação: ",
                         "Dias de locação inválido");
 
-                    Locacao locacao = new Locacao(idCliente, idVeiculo, DateTime.Now, diasLocacao);
-
                     try
                     {
-                        locacaoController.AdicionarLocacao(locacao, cpf);
+                        locacaoController.AdicionarLocacao(email, placa, diasLocacao, cpf);
 
                         Console.WriteLine("\nLocação adicionada com sucesso!");
 

@@ -78,13 +78,25 @@ namespace Locadora.View
                         {
                             var listaFuncionarios = funcionarioController.ListarTodosFuncionarios();
 
-                            foreach (var f in listaFuncionarios)
+                            if (listaFuncionarios is null)
                             {
+                                
                                 Console.WriteLine("=============================");
-                                Console.WriteLine(f);
+                                Console.WriteLine("NENHUM FUNCIONÁRIO REGISTRADO");
                                 Console.WriteLine("=============================\n");
+
+                                
                             }
-                            Console.ReadKey();
+                            else 
+                            {
+                                foreach (var f in listaFuncionarios)
+                                {
+                                    Console.WriteLine("=============================");
+                                    Console.WriteLine(f);
+                                    Console.WriteLine("=============================\n");
+                                }
+                            }
+                                Console.ReadKey();
                         }
                         catch (SqlException ex)
                         {

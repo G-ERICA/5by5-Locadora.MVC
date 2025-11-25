@@ -57,9 +57,9 @@ namespace Locadora.View
                             InputHelper.LerString("Digite o tipo de documento: ", "Informe um tipo válido!");
                         string numero = InputHelper.LerString("Digite o numero do Documento: ", "Número inválido!");
                         DateOnly emissao =
-                            InputHelper.LerData("Digite a Data de Emissão (dd/MM/yyyy): ", "Data inválida!");
+                            InputHelper.LerDataEmissao("Digite a Data de Emissão (dd/MM/yyyy): ", "Data inválida!");
                         DateOnly validade =
-                            InputHelper.LerData("Digite a data de Validade (dd/MM/yyyy): ", "Data inválida!");
+                            InputHelper.LerDataValidade("Digite a data de Validade (dd/MM/yyyy): ", "Data inválida!", emissao);
 
                         Documento documento = new Documento(tipoDoc, numero, emissao, validade);
                         try

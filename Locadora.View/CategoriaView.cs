@@ -77,11 +77,20 @@ public class CategoriaView
 
                         listaCategorias = categoriaController.ListarCategorias();
 
-                        foreach (var item in listaCategorias)
+                        if (listaCategorias is null)
                         {
                             Console.WriteLine("=============================");
-                            Console.WriteLine(item);
+                            Console.WriteLine("NENHUM CATEGORIA REGISTRADA");
                             Console.WriteLine("=============================\n");
+                        }
+                        else
+                        {
+                            foreach (var item in listaCategorias)
+                            {
+                                Console.WriteLine("=============================");
+                                Console.WriteLine(item);
+                                Console.WriteLine("=============================\n");
+                            }
                         }
                         Console.ReadKey();
                     }
